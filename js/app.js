@@ -1,3 +1,6 @@
+const SUPABASE_URL = 'https://uniwyjgamivvhefiewvk.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_SKYxuMy_7x7J-YTb23_94w_Jp4pKYzI';
+
 const products = [
   {id:'glass-cup',name:'Sunday Glass Cup',category:'Home',price:18,origin:'Made in Japan',tag:'Bestseller',image:'https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=800&q=82',description:'A beautifully simple glass for slow mornings and long lunches. Made from sturdy, recycled glass with a softly rounded silhouette.'},
   {id:'incense',name:'Hinoki Incense Set',category:'Home',price:24,origin:'Made in Japan',tag:'Small batch',image:'https://images.unsplash.com/photo-1602874801007-bd458bb1b8b6?auto=format&fit=crop&w=800&q=82',description:'A quiet, woodsy ritual for the end of the day. Notes of hinoki, cedar, and a hint of citrus, hand-rolled in Kyoto.'},
@@ -19,6 +22,10 @@ function saveCart(){localStorage.setItem('parcel-pine-cart',JSON.stringify(cart)
 function money(value){return `$${value.toFixed(2)}`}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function showToast(message){const toast=$('#toast');toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2400)}
+async function createOrder(customerEmail,total){
+  const response=await fetch(`${SUPABASE_URL}/rest/v1/orders`,{method:'POST',headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${SUPABASE_PUBLISHABLE_KEY}`,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({customer_email:customerEmail,total})});
+  if(!response.ok){const result=await response.json().catch(()=>({}));throw new Error(`Order insert failed (HTTP ${response.status}${result.code?`, ${result.code}`:''})`)}
+}
 function renderProducts(){
   const query=$('#product-search').value.trim().toLowerCase();
   let shown=products.filter(p=>(activeCategory==='All'||p.category===activeCategory)&&(!query||`${p.name} ${p.category} ${p.origin} ${p.description}`.toLowerCase().includes(query)));
@@ -52,6 +59,32 @@ $('.menu-toggle').addEventListener('click',e=>{const button=e.currentTarget;cons
 $('.search-open').addEventListener('click',()=>{$('#product-search').focus();document.querySelector('#shop').scrollIntoView({behavior:'smooth'})});
 $('#mobile-filter').addEventListener('click',()=>{$('.shop-controls').classList.toggle('mobile-open');if($('.shop-controls').classList.contains('mobile-open'))$('#product-search').focus()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
-$('#checkout-form').addEventListener('submit',e=>{e.preventDefault();if(!e.currentTarget.reportValidity())return;const first=new FormData(e.currentTarget).get('firstName');cart={};saveCart();closeAll();e.currentTarget.reset();showToast(`Thanks, ${first}! Your order is in. (Demo checkout)`)});
+$('#checkout-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const form=e.currentTarget;
+  if(!form.reportValidity())return;
+  const customerEmail=new FormData(form).get('email').trim();
+  const total=Object.entries(cart).reduce((sum,[id,qty])=>sum+products.find(p=>p.id===id).price*qty,0);
+  const submitButton=form.querySelector('[type="submit"]');
+  const status=$('#checkout-status');
+  submitButton.disabled=true;
+  status.hidden=false;
+  status.textContent='Saving your order…';
+  try{
+    await createOrder(customerEmail,total);
+    cart={};
+    saveCart();
+    closeAll();
+    form.reset();
+    status.textContent='';
+    status.hidden=true;
+    showToast('Your order has been saved. Thank you!');
+  }catch(error){
+    console.error(error);
+    status.textContent='We could not save your order. Please try again in a moment.';
+  }finally{
+    submitButton.disabled=false;
+  }
+});
 $('#newsletter-form').addEventListener('submit',e=>{e.preventDefault();const email=$('#newsletter-email');if(email.reportValidity()){showToast('You’re on the list. Watch your inbox for a little hello!');e.currentTarget.reset()}});
 renderProducts();renderCart();
