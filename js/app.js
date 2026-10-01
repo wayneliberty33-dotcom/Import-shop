@@ -98,7 +98,8 @@ supabaseClient.auth.onAuthStateChange((event,session)=>{
   const previousUserId=currentUser?.id;
   currentUser=session?.user||null;
   $('#google-sign-in').hidden=Boolean(currentUser);
-  $('#account-section').hidden=!currentUser;
+  $('#account-signed-out').hidden=Boolean(currentUser);
+  $('#account-signed-in').hidden=!currentUser;
   if(!currentUser){
     $('#account-email').textContent='';
     $('#order-history').replaceChildren();
@@ -126,7 +127,7 @@ $('#sign-out').addEventListener('click',async e=>{
     button.disabled=false;
   }
 });
-$('#google-sign-in').addEventListener('click',async e=>{
+$$('.google-sign-in').forEach(button=>button.addEventListener('click',async e=>{
   const button=e.currentTarget;
   button.disabled=true;
   try{
@@ -137,7 +138,7 @@ $('#google-sign-in').addEventListener('click',async e=>{
     showToast('Google sign-in could not be started. Please try again.');
     button.disabled=false;
   }
-});
+}));
 $('#checkout-form').addEventListener('submit',async e=>{
   e.preventDefault();
   const form=e.currentTarget;
