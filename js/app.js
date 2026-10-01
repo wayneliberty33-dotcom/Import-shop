@@ -1,5 +1,6 @@
 const SUPABASE_URL = 'https://uniwyjgamivvhefiewvk.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_SKYxuMy_7x7J-YTb23_94w_Jp4pKYzI';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const products = [
   {id:'glass-cup',name:'Sunday Glass Cup',category:'Home',price:18,origin:'Made in Japan',tag:'Bestseller',image:'https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=800&q=82',description:'A beautifully simple glass for slow mornings and long lunches. Made from sturdy, recycled glass with a softly rounded silhouette.'},
@@ -59,6 +60,18 @@ $('.menu-toggle').addEventListener('click',e=>{const button=e.currentTarget;cons
 $('.search-open').addEventListener('click',()=>{$('#product-search').focus();document.querySelector('#shop').scrollIntoView({behavior:'smooth'})});
 $('#mobile-filter').addEventListener('click',()=>{$('.shop-controls').classList.toggle('mobile-open');if($('.shop-controls').classList.contains('mobile-open'))$('#product-search').focus()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
+$('#google-sign-in').addEventListener('click',async e=>{
+  const button=e.currentTarget;
+  button.disabled=true;
+  try{
+    const {error}=await supabaseClient.auth.signInWithOAuth({provider:'google'});
+    if(error)throw error;
+  }catch(error){
+    console.error('Google sign-in could not be started:',error);
+    showToast('Google sign-in could not be started. Please try again.');
+    button.disabled=false;
+  }
+});
 $('#checkout-form').addEventListener('submit',async e=>{
   e.preventDefault();
   const form=e.currentTarget;

@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/app.js" defer></script>
 </head>
 <body>
@@ -21,6 +22,7 @@
       <a href="#shop">Shop all</a><a href="#shop" data-nav-category="Home">Home goods</a><a href="#shop" data-nav-category="Beauty">Beauty</a><a href="#story">Our story</a>
     </nav>
     <div class="header-actions">
+      <button class="google-sign-in" id="google-sign-in" type="button"><span class="google-mark" aria-hidden="true">G</span> Continue with Google</button>
       <button class="icon-button search-open" aria-label="Search products"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></button>
       <button class="cart-trigger" aria-label="Open shopping bag"><svg viewBox="0 0 24 24"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span>Bag</span><span class="cart-count">0</span></button>
     </div>
