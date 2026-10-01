@@ -27,7 +27,7 @@ function showToast(message){const toast=$('#toast');toast.textContent=message;to
 async function createOrder(customerEmail,total){
   const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
   if(sessionError)throw sessionError;
-  const order={customer_email:customerEmail,total,user_id:null};
+  const order={customer_email:customerEmail,total};
   const accessToken=session?.access_token;
   if(session?.user?.id)order.user_id=session.user.id;
   const response=await fetch(`${SUPABASE_URL}/rest/v1/orders`,{method:'POST',headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${accessToken||SUPABASE_PUBLISHABLE_KEY}`,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(order)});
