@@ -25,7 +25,12 @@ function money(value){return `$${value.toFixed(2)}`}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function showToast(message){const toast=$('#toast');toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2400)}
 async function createOrder(customerEmail,total){
-  const response=await fetch(`${SUPABASE_URL}/rest/v1/orders`,{method:'POST',headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${SUPABASE_PUBLISHABLE_KEY}`,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({customer_email:customerEmail,total})});
+  const {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
+  if(sessionError)throw sessionError;
+  const order={customer_email:customerEmail,total,user_id:null};
+  const accessToken=session?.access_token;
+  if(session?.user?.id)order.user_id=session.user.id;
+  const response=await fetch(`${SUPABASE_URL}/rest/v1/orders`,{method:'POST',headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${accessToken||SUPABASE_PUBLISHABLE_KEY}`,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(order)});
   if(!response.ok){const result=await response.json().catch(()=>({}));throw new Error(`Order insert failed (HTTP ${response.status}${result.code?`, ${result.code}`:''})`)}
 }
 function renderProducts(){
@@ -47,6 +52,34 @@ function closeAll(){const drawer=$('#cart-drawer');drawer.classList.remove('open
 function openCart(){openOverlay();$('#cart-drawer').classList.add('open');$('#cart-drawer').setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
 function openProduct(id){const p=products.find(item=>item.id===id);$('#modal-product').innerHTML=`<img src="${p.image}" alt="${escapeHtml(p.name)}"><div><p class="eyebrow">${escapeHtml(p.category)} · ${escapeHtml(p.origin)}</p><h2>${escapeHtml(p.name)}</h2><span class="modal-price">${money(p.price)}</span><p class="description">${escapeHtml(p.description)}</p><span class="modal-origin">Thoughtfully sourced · Ships with care</span><br><button class="button button-dark" data-add="${p.id}">Add to bag <span>↗</span></button></div>`;openOverlay();$('#product-modal').hidden=false;document.body.style.overflow='hidden'}
 function openCheckout(){if(!Object.keys(cart).length)return;const subtotal=Object.entries(cart).reduce((s,[id,q])=>s+products.find(p=>p.id===id).price*q,0);$('#checkout-summary').textContent=`Your finds total ${money(subtotal)}${subtotal>=75?' · free US shipping':''}.`;$('#checkout-modal').hidden=false;document.body.style.overflow='hidden'}
+let currentUser=null;
+function renderOrderHistory(orders){
+  $('#order-history').innerHTML=orders.map(order=>{
+    const date=order.created_at?new Date(order.created_at):null;
+    const dateText=date&&!Number.isNaN(date.getTime())?new Intl.DateTimeFormat(undefined,{dateStyle:'medium'}).format(date):'Date unavailable';
+    const total=Number(order.total);
+    return `<li class="order-history-item"><span><strong>Order #${escapeHtml(order.id)}</strong><small>${dateText}</small></span><strong>${Number.isFinite(total)?money(total):'Total unavailable'}</strong></li>`;
+  }).join('');
+  $('#orders-empty').hidden=orders.length>0;
+}
+async function loadOrders(user){
+  const status=$('#orders-status');
+  status.hidden=false;
+  status.textContent='Loading your orders…';
+  $('#orders-empty').hidden=true;
+  try{
+    const {data,error}=await supabaseClient.from('orders').select('id,created_at,total').eq('user_id',user.id).order('created_at',{ascending:false});
+    if(error)throw error;
+    if(currentUser?.id!==user.id)return;
+    status.hidden=true;
+    renderOrderHistory(data||[]);
+  }catch(error){
+    if(currentUser?.id!==user.id)return;
+    console.error('Could not load order history:',error);
+    status.textContent='We could not load your orders. Please try again later.';
+    $('#order-history').replaceChildren();
+  }
+}
 $('.product-grid').addEventListener('click',e=>{const add=e.target.closest('[data-add]');if(add){e.stopPropagation();addToCart(add.dataset.add);return}const detail=e.target.closest('[data-detail]');if(detail)openProduct(detail.dataset.detail)});
 $('.product-grid').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-detail]')){e.preventDefault();openProduct(e.target.dataset.detail)}});
 $$('.category-chip').forEach(btn=>btn.addEventListener('click',()=>{$$('.category-chip').forEach(b=>b.classList.toggle('active',b===btn));activeCategory=btn.dataset.category;renderProducts()}));
@@ -61,6 +94,38 @@ $('.menu-toggle').addEventListener('click',e=>{const button=e.currentTarget;cons
 $('.search-open').addEventListener('click',()=>{$('#product-search').focus();document.querySelector('#shop').scrollIntoView({behavior:'smooth'})});
 $('#mobile-filter').addEventListener('click',()=>{$('.shop-controls').classList.toggle('mobile-open');if($('.shop-controls').classList.contains('mobile-open'))$('#product-search').focus()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
+supabaseClient.auth.onAuthStateChange((event,session)=>{
+  const previousUserId=currentUser?.id;
+  currentUser=session?.user||null;
+  $('#google-sign-in').hidden=Boolean(currentUser);
+  $('#account-section').hidden=!currentUser;
+  if(!currentUser){
+    $('#account-email').textContent='';
+    $('#order-history').replaceChildren();
+    $('#orders-status').hidden=true;
+    $('#orders-empty').hidden=true;
+    return;
+  }
+  $('#account-email').textContent=currentUser.email||'Signed in';
+  if(event==='INITIAL_SESSION'||event==='SIGNED_IN'||previousUserId!==currentUser.id){
+    const user=currentUser;
+    setTimeout(()=>loadOrders(user),0);
+  }
+});
+$('#sign-out').addEventListener('click',async e=>{
+  const button=e.currentTarget;
+  button.disabled=true;
+  try{
+    const {error}=await supabaseClient.auth.signOut();
+    if(error)throw error;
+    showToast('You have signed out.');
+  }catch(error){
+    console.error('Could not sign out:',error);
+    showToast('Sign out could not be completed. Please try again.');
+  }finally{
+    button.disabled=false;
+  }
+});
 $('#google-sign-in').addEventListener('click',async e=>{
   const button=e.currentTarget;
   button.disabled=true;
