@@ -3,32 +3,45 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { email, message } = req.body;
-
-  const response = await fetch(
-    https://api.mailgun.net/v3/${process.env.MAILGUN_DOMAIN}/messages,
-    {
-      method: "POST",
-      headers: {
-        Authorization:
-          "Basic " +
-          Buffer.from(api:${process.env.MAILGUN_API_KEY}).toString("base64"),
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        from: Import Shop <${process.env.MAILGUN_FROM_EMAIL}>,
-        to: process.env.SHOP_EMAIL,
-        subject: "New Import Shop Message",
-        text: Customer email: ${email}\n\nMessage:\n${message},
-      }),
+  try {
+    const { email } = req.body || {};
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
     }
-  );
 
-  const data = await response.text();
+    const domain = process.env.MAILGUN_DOMAIN;
+    const apiKey = process.env.MAILGUN_API_KEY;
 
-  if (!response.ok) {
-    return res.status(500).json({ error: data });
+    if (!domain || !apiKey) {
+      return res.status(500).json({ error: "Mailgun environment variables are missing" });
+    }
+
+    const response = await fetch(
+      `https://api.mailgun.net/v3/${domain}/messages`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Basic " + Buffer.from(`api:${apiKey}`).toString("base64"),
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          from: `Import Shop <postmaster@${domain}>`,
+          to: email,
+          subject: "Welcome to Import Shop",
+          text: "Thanks for joining the Import Shop list. We will keep you posted about new finds and updates.",
+        }),
+      }
+    );
+
+    const data = await response.text();
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: data });
+    }
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Mailgun error:", error);
+    return res.status(500).json({ error: "Could not send email" });
   }
-
-  res.status(200).json({ success: true });
 }
