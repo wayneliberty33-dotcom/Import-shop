@@ -166,5 +166,30 @@ $('#checkout-form').addEventListener('submit',async e=>{
     submitButton.disabled=false;
   }
 });
-$('#newsletter-form').addEventListener('submit',e=>{e.preventDefault();const email=$('#newsletter-email');if(email.reportValidity()){showToast('You’re on the list. Watch your inbox for a little hello!');e.currentTarget.reset()}});
+$('#newsletter-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const form=e.currentTarget;
+  const email=$('#newsletter-email');
+  if(!email.reportValidity())return;
+  const button=form.querySelector('button[type="submit"]');
+  button.disabled=true;
+  button.textContent='Sending…';
+  try{
+    const response=await fetch('/api/send-email.js',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:email.value.trim()})
+    });
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(result.error||'Email could not be sent');
+    showToast('You’re on the list. Check your inbox!');
+    form.reset();
+  }catch(error){
+    console.error('Newsletter email failed:',error);
+    showToast('We could not send the email. Please try again.');
+  }finally{
+    button.disabled=false;
+    button.innerHTML='Count me in <span>↗</span>';
+  }
+});
 renderProducts();renderCart();
