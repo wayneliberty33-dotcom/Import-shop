@@ -175,7 +175,7 @@ $('#newsletter-form').addEventListener('submit',async e=>{
   button.disabled=true;
   button.textContent='Sending…';
   try{
-    const response=await fetch('/api/send-email.js',{
+    const response=await fetch('/api/send-email',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({email:email.value.trim()})
