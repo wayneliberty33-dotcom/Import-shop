@@ -16,9 +16,16 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Mailgun environment variables are missing" });
     }
 
-    const response = await fetch(
+    const endpoints = [
       `https://api.mailgun.net/v3/${domain}/messages`,
-      {
+      `https://api.eu.mailgun.net/v3/${domain}/messages`,
+    ];
+
+    let lastStatus = 500;
+    let lastError = "Mailgun request failed";
+
+    for (const endpoint of endpoints) {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           Authorization: "Basic " + Buffer.from(`api:${apiKey}`).toString("base64"),
@@ -30,16 +37,19 @@ export default async function handler(req, res) {
           subject: "Welcome to Import Shop",
           text: "Thanks for joining the Import Shop list. We will keep you posted about new finds and updates.",
         }),
+      });
+
+      const data = await response.text();
+
+      if (response.ok) {
+        return res.status(200).json({ success: true });
       }
-    );
 
-    const data = await response.text();
-
-    if (!response.ok) {
-      return res.status(response.status).json({ error: data });
+      lastStatus = response.status;
+      lastError = data;
     }
 
-    return res.status(200).json({ success: true });
+    return res.status(lastStatus).json({ error: lastError });
   } catch (error) {
     console.error("Mailgun error:", error);
     return res.status(500).json({ error: "Could not send email" });
