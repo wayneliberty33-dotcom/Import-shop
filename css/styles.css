@@ -8,3 +8,19 @@
 @media(max-width:700px){#account-signed-out:not([hidden]) > #account-google-sign-in{align-self:stretch}}
 .product-image{background:#f8f5f1}
 .product-image img,.cart-item img,.modal-product>img{object-fit:contain}
+.account-page{min-height:calc(100vh - 210px);padding:clamp(42px,8vw,92px) 8.3%;display:flex;justify-content:center;align-items:flex-start}
+.account-page .account-section{width:min(100%,900px);padding:clamp(26px,5vw,52px);background:#e9eadf;border:1px solid var(--line)}
+.account-page-intro{margin-bottom:34px}
+.account-page-intro .eyebrow{margin-bottom:12px}
+.account-page-intro h1{font:500 clamp(34px,4.5vw,48px)/1.1 var(--serif);letter-spacing:-.05em;margin:0}
+.account-page-intro>p:last-child{font-size:12px;color:#696f64;line-height:1.8;margin:10px 0 0}
+.account-page .account-signed-out{padding-top:26px;border-top:1px solid #cdd0c2}
+.account-page .account-heading{padding-top:26px;border-top:1px solid #cdd0c2}
+.account-page .account-heading h2,.account-page .account-signed-out h2{font:500 24px/1.2 var(--serif);letter-spacing:-.03em;margin:0}
+.account-page .account-page-status{margin:20px 0 0;color:#696f64;font-size:12px}
+.account-page .account-back-link{display:inline-block;margin-top:30px;color:var(--ink);font-size:11px;text-decoration:none;border-bottom:1px solid #abb192;padding-bottom:4px}
+.account-page-header .brand{gap:10px}
+.account-page-nav{display:flex;gap:28px;margin-left:auto;font-size:12px}
+.account-page-nav a{color:var(--ink);text-decoration:none}
+.account-page-nav a:hover{opacity:.65}
+@media(max-width:700px){.account-page{min-height:calc(100vh - 190px);padding:35px 6% 55px}.account-page-header{padding:0 6%}.account-page-nav{gap:15px;font-size:11px}.account-page .account-heading{align-items:flex-start}.account-page .account-heading .button{align-self:flex-start}}
