@@ -1,5 +1,6 @@
 const SUPABASE_URL = 'https://uniwyjgamivvhefiewvk.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_SKYxuMy_7x7J-YTb23_94w_Jp4pKYzI';
+const OAUTH_REDIRECT_URL = 'https://wayneliberty33-dotcom.github.io/Import-shop/';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 const $ = (selector) => document.querySelector(selector);
 
@@ -89,10 +90,9 @@ $('#account-google-sign-in').addEventListener('click', async (event) => {
   status.hidden = false;
   status.textContent = 'Connecting to Google…';
   try {
-    const redirectTo = new URL('account.html', window.location.href).href;
     const { error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo }
+      options: { redirectTo: OAUTH_REDIRECT_URL }
     });
     if (error) throw error;
   } catch (error) {

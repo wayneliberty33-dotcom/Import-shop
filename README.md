@@ -17,4 +17,4 @@ Open `index.html` in a modern browser. Product catalog photos are stored locally
 
 Checkout is a front-end demo only; it validates the shipping form and displays an order confirmation but does not take payment or send orders to a server.
 
-The account page uses Google sign-in through Supabase. Add `https://wayneliberty33-dotcom.github.io/Import-shop/account.html` to the Supabase project's allowed redirect URLs so OAuth can return customers to their account page.
+The account page uses Google sign-in through Supabase and reuses the storefront's existing OAuth callback URL. After sign-in, customers can return to the account page to view their orders.
