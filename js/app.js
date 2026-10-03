@@ -161,7 +161,7 @@ const products = [
     price: 8000,
     origin: 'Imported',
     tag: 'Home',
-    image: 'https://loremflickr.com/800/600/motion,sensor,night,light',
+    image: 'assets/night-light.svg',
     description: 'A compact LED light that automatically turns on when motion is detected, useful for halls, bedrooms, stairs, and cupboards.'
   },
   {
@@ -171,7 +171,7 @@ const products = [
     price: 9500,
     origin: 'Imported',
     tag: 'Kitchen',
-    image: 'https://loremflickr.com/800/600/milk,frother',
+    image: 'assets/milk-frother.svg',
     description: 'A handheld electric frother for preparing creamy coffee, cappuccino, hot chocolate, and other drinks.'
   },
   {
@@ -181,7 +181,7 @@ const products = [
     price: 12000,
     origin: 'Imported',
     tag: 'Useful',
-    image: 'https://loremflickr.com/800/600/digital,kitchen,scale',
+    image: 'assets/kitchen-scale.svg',
     description: 'A compact digital kitchen scale for accurately measuring ingredients during cooking and baking.'
   },
   {
@@ -191,7 +191,7 @@ const products = [
     price: 18000,
     origin: 'Imported',
     tag: 'Everyday',
-    image: 'https://loremflickr.com/800/600/electric,food,chopper',
+    image: 'assets/food-chopper.svg',
     description: 'A rechargeable mini food chopper for quickly preparing onions, vegetables, herbs, and other ingredients.'
   },
   {
@@ -201,7 +201,7 @@ const products = [
     price: 6000,
     origin: 'Imported',
     tag: 'Handy',
-    image: 'https://loremflickr.com/800/600/oil,spray,bottle,kitchen',
+    image: 'assets/oil-spray-bottle.svg',
     description: 'A reusable kitchen oil sprayer for controlled application of cooking oil, vinegar, dressings, and other liquids.'
   }
 ];
