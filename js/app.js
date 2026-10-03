@@ -11,7 +11,7 @@ const products = [
     price: 18500,
     origin: 'Imported',
     tag: 'Popular',
-    image: 'https://loremflickr.com/800/600/smartwatch,product',
+    image: 'assets/products/smart-watch.jpg',
     description: 'A modern smart watch for everyday notifications, fitness tracking, calls, and daily convenience.'
   },
   {
@@ -21,7 +21,7 @@ const products = [
     price: 15000,
     origin: 'Imported',
     tag: 'New',
-    image: 'https://loremflickr.com/800/600/wireless,earbuds',
+    image: 'assets/products/wireless-earbuds.jpg',
     description: 'Compact wireless earbuds with a portable charging case for music, calls, and everyday listening.'
   },
   {
@@ -31,7 +31,7 @@ const products = [
     price: 22000,
     origin: 'Imported',
     tag: 'Popular',
-    image: 'https://loremflickr.com/800/600/electric,shaver,trimmer',
+    image: 'assets/products/electric-shaver.jpg',
     description: 'A rechargeable grooming tool for trimming beards, shaping facial hair, and everyday personal care.'
   },
   {
@@ -41,7 +41,7 @@ const products = [
     price: 25000,
     origin: 'Imported',
     tag: 'Practical',
-    image: 'https://loremflickr.com/800/600/car,vacuum,cleaner',
+    image: 'assets/products/car-vacuum.jpg',
     description: 'A compact rechargeable vacuum for cleaning car seats, floors, dashboards, and tight spaces.'
   },
   {
@@ -51,7 +51,7 @@ const products = [
     price: 15000,
     origin: 'Imported',
     tag: 'Creator Pick',
-    image: 'https://loremflickr.com/800/600/phone,tripod,ringlight',
+    image: 'assets/products/phone-tripod-ring-light.jpg',
     description: 'Adjustable phone tripod with built-in ring lighting for photos, videos, live streams, and content creation.'
   },
   {
@@ -61,7 +61,7 @@ const products = [
     price: 25000,
     origin: 'Imported',
     tag: 'Beauty',
-    image: 'https://loremflickr.com/800/600/hair,styling,kit',
+    image: 'assets/products/hair-styling-kit.jpg',
     description: 'A compact hair styling set designed for convenient everyday grooming and travel.'
   },
   {
@@ -71,7 +71,7 @@ const products = [
     price: 12000,
     origin: 'Imported',
     tag: 'Handy',
-    image: 'https://loremflickr.com/800/600/makeup,organizer',
+    image: 'assets/products/makeup-organizer.jpg',
     description: 'A practical organizer for keeping cosmetics, brushes, skincare items, and beauty accessories tidy.'
   },
   {
@@ -81,7 +81,7 @@ const products = [
     price: 10000,
     origin: 'Imported',
     tag: 'Travel',
-    image: 'https://loremflickr.com/800/600/jewelry,organizer',
+    image: 'assets/products/jewelry-organizer.jpg',
     description: 'A compact travel organizer for storing rings, earrings, necklaces, bracelets, and other small accessories.'
   },
   {
@@ -91,7 +91,7 @@ const products = [
     price: 25000,
     origin: 'Imported',
     tag: 'Essential',
-    image: 'https://loremflickr.com/800/600/powerbank,charger',
+    image: 'assets/products/power-bank.jpg',
     description: 'High-capacity portable power bank for keeping phones and other compatible devices charged while away from a socket.'
   },
   {
@@ -101,7 +101,7 @@ const products = [
     price: 20000,
     origin: 'Imported',
     tag: 'Everyday',
-    image: 'https://loremflickr.com/800/600/rechargeable,mini,fan',
+    image: 'assets/products/mini-fan.jpg',
     description: 'A compact rechargeable fan designed for personal cooling at home, work, travel, or outdoors.'
   },
   {
@@ -111,7 +111,7 @@ const products = [
     price: 8500,
     origin: 'Imported',
     tag: 'Travel',
-    image: 'https://loremflickr.com/800/600/digital,luggage,scale',
+    image: 'assets/products/luggage-scale.jpg',
     description: 'A portable digital scale that helps you check luggage weight before travelling and avoid unexpected baggage charges.'
   },
   {
@@ -121,7 +121,7 @@ const products = [
     price: 18000,
     origin: 'Imported',
     tag: 'Small Business',
-    image: 'https://loremflickr.com/800/600/label,printer',
+    image: 'assets/products/label-printer.jpg',
     description: 'A compact label printer for organizing products, packages, storage items, notes, and small-business orders.'
   },
   {
@@ -131,7 +131,7 @@ const products = [
     price: 25000,
     origin: 'Imported',
     tag: 'Popular',
-    image: 'https://loremflickr.com/800/600/bluetooth,speaker',
+    image: 'assets/products/bluetooth-speaker.jpg',
     description: 'A portable wireless speaker for music, podcasts, parties, and everyday entertainment.'
   },
   {
@@ -141,7 +141,7 @@ const products = [
     price: 18000,
     origin: 'Imported',
     tag: 'Useful',
-    image: 'https://loremflickr.com/800/600/handwarmer,electronic',
+    image: 'assets/products/hand-warmer.jpg',
     description: 'A compact rechargeable hand warmer designed for convenient portable warmth when needed.'
   },
   {
@@ -151,7 +151,7 @@ const products = [
     price: 30000,
     origin: 'Imported',
     tag: 'Practical',
-    image: 'https://loremflickr.com/800/600/electric,air,pump',
+    image: 'assets/products/electric-air-pump.jpg',
     description: 'A portable electric pump for inflating compatible tyres, balls, bicycles, and other inflatable items.'
   },
   {
@@ -161,7 +161,7 @@ const products = [
     price: 8000,
     origin: 'Imported',
     tag: 'Home',
-    image: 'assets/night-light.svg',
+    image: 'assets/products/night-light.jpg',
     description: 'A compact LED light that automatically turns on when motion is detected, useful for halls, bedrooms, stairs, and cupboards.'
   },
   {
@@ -171,7 +171,7 @@ const products = [
     price: 9500,
     origin: 'Imported',
     tag: 'Kitchen',
-    image: 'assets/milk-frother.svg',
+    image: 'assets/products/milk-frother.jpg',
     description: 'A handheld electric frother for preparing creamy coffee, cappuccino, hot chocolate, and other drinks.'
   },
   {
@@ -181,7 +181,7 @@ const products = [
     price: 12000,
     origin: 'Imported',
     tag: 'Useful',
-    image: 'assets/kitchen-scale.svg',
+    image: 'assets/products/kitchen-scale.jpg',
     description: 'A compact digital kitchen scale for accurately measuring ingredients during cooking and baking.'
   },
   {
@@ -191,7 +191,7 @@ const products = [
     price: 18000,
     origin: 'Imported',
     tag: 'Everyday',
-    image: 'assets/food-chopper.svg',
+    image: 'assets/products/food-chopper.jpg',
     description: 'A rechargeable mini food chopper for quickly preparing onions, vegetables, herbs, and other ingredients.'
   },
   {
@@ -201,7 +201,7 @@ const products = [
     price: 6000,
     origin: 'Imported',
     tag: 'Handy',
-    image: 'assets/oil-spray-bottle.svg',
+    image: 'assets/products/oil-spray-bottle.jpg',
     description: 'A reusable kitchen oil sprayer for controlled application of cooking oil, vinegar, dressings, and other liquids.'
   }
 ];
@@ -222,7 +222,16 @@ async function createOrder(customerEmail,total){
   const order={customer_email:customerEmail,total};
   const accessToken=session?.access_token;
   if(session?.user?.id)order.user_id=session.user.id;
-  const response=await fetch(`${SUPABASE_URL}/rest/v1/orders`,{method:'POST',headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${accessToken||SUPABASE_PUBLISHABLE_KEY}`,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(order)});
+  const response=await fetch(`${SUPABASE_URL}/rest/v1/orders`,{
+    method:'POST',
+    headers:{
+      apikey:SUPABASE_PUBLISHABLE_KEY,
+      ...(accessToken ? {Authorization:`Bearer ${accessToken}`} : {}),
+      'Content-Type':'application/json',
+      Prefer:'return=minimal'
+    },
+    body:JSON.stringify(order)
+  });
   if(!response.ok){const result=await response.json().catch(()=>({}));throw new Error(`Order insert failed (HTTP ${response.status}${result.code?`, ${result.code}`:''})`)}
 }
 function renderProducts(){
