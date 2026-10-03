@@ -5,192 +5,204 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLI
 
 const products = [
   {
-    id: 'sewing-machine',
-    name: 'Portable Sewing Machine',
-    category: 'Sewing',
-    price: 85,
+    id: 'smart-watch',
+    name: 'Smart Watch',
+    category: 'Electronics',
+    price: 18500,
     origin: 'Imported',
     tag: 'Popular',
-    image: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=800&q=82',
-    description: 'A compact sewing machine for everyday repairs, small clothing projects, and home-based sewing businesses.'
+    image: 'https://loremflickr.com/800/600/smartwatch,product',
+    description: 'A modern smart watch for everyday notifications, fitness tracking, calls, and daily convenience.'
   },
   {
-    id: 'thread-machine',
-    name: 'Industrial Thread Machine',
-    category: 'Sewing',
-    price: 145,
+    id: 'wireless-earbuds',
+    name: 'Wireless Earbuds',
+    category: 'Electronics',
+    price: 15000,
     origin: 'Imported',
-    tag: 'Business',
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=82',
-    description: 'A practical machine designed for frequent sewing work and small production businesses.'
+    tag: 'New',
+    image: 'https://loremflickr.com/800/600/wireless,earbuds',
+    description: 'Compact wireless earbuds with a portable charging case for music, calls, and everyday listening.'
   },
-
   {
-    id: 'nail-drill',
-    name: 'Professional Nail Drill',
+    id: 'electric-shaver',
+    name: 'Electric Shaver & Beard Trimmer',
+    category: 'Grooming',
+    price: 22000,
+    origin: 'Imported',
+    tag: 'Popular',
+    image: 'https://loremflickr.com/800/600/electric,shaver,trimmer',
+    description: 'A rechargeable grooming tool for trimming beards, shaping facial hair, and everyday personal care.'
+  },
+  {
+    id: 'car-vacuum',
+    name: 'Portable Car Vacuum Cleaner',
+    category: 'Automotive',
+    price: 25000,
+    origin: 'Imported',
+    tag: 'Practical',
+    image: 'https://loremflickr.com/800/600/car,vacuum,cleaner',
+    description: 'A compact rechargeable vacuum for cleaning car seats, floors, dashboards, and tight spaces.'
+  },
+  {
+    id: 'phone-tripod-ring-light',
+    name: 'Phone Tripod with Ring Light',
+    category: 'Accessories',
+    price: 15000,
+    origin: 'Imported',
+    tag: 'Creator Pick',
+    image: 'https://loremflickr.com/800/600/phone,tripod,ringlight',
+    description: 'Adjustable phone tripod with built-in ring lighting for photos, videos, live streams, and content creation.'
+  },
+  {
+    id: 'mini-hair-styling-kit',
+    name: 'Mini Hair Styling Kit',
     category: 'Beauty',
-    price: 48,
+    price: 25000,
     origin: 'Imported',
     tag: 'Beauty',
-    image: 'https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=800&q=82',
-    description: 'Adjustable-speed nail drill suitable for manicures, pedicures, nail preparation, and salon use.'
+    image: 'https://loremflickr.com/800/600/hair,styling,kit',
+    description: 'A compact hair styling set designed for convenient everyday grooming and travel.'
   },
   {
-    id: 'nail-lamp',
-    name: 'UV LED Nail Lamp',
+    id: 'makeup-organizer',
+    name: 'Makeup Organizer',
     category: 'Beauty',
-    price: 35,
-    origin: 'Imported',
-    tag: 'New',
-    image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=82',
-    description: 'Fast-curing LED nail lamp for gel polish, home nail care, and professional beauty work.'
-  },
-
-  {
-    id: 'heat-sealer',
-    name: 'Impulse Heat Sealer',
-    category: 'Packaging',
-    price: 55,
-    origin: 'Imported',
-    tag: 'Small Business',
-    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=82',
-    description: 'A compact sealing machine for closing plastic bags, food packaging, and small retail products.'
-  },
-  {
-    id: 'vacuum-sealer',
-    name: 'Compact Vacuum Sealer',
-    category: 'Packaging',
-    price: 72,
-    origin: 'Imported',
-    tag: 'Practical',
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=82',
-    description: 'Useful for keeping food and products sealed, organized, and protected during storage.'
-  },
-
-  {
-    id: 'heat-press',
-    name: 'Digital Heat Press Machine',
-    category: 'HeatPress',
-    price: 185,
-    origin: 'Imported',
-    tag: 'Business',
-    image: 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=800&q=82',
-    description: 'Digital heat press for transferring designs onto T-shirts, bags, fabrics, and other suitable materials.'
-  },
-  {
-    id: 'mini-heat-press',
-    name: 'Mini Heat Press',
-    category: 'HeatPress',
-    price: 65,
-    origin: 'Imported',
-    tag: 'Compact',
-    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=82',
-    description: 'Small and convenient heat press for crafts, personalized gifts, small clothing projects, and home businesses.'
-  },
-
-  {
-    id: 'label-printer',
-    name: 'Thermal Label Printer',
-    category: 'Printing',
-    price: 95,
-    origin: 'Imported',
-    tag: 'Business',
-    image: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=800&q=82',
-    description: 'Compact thermal printer for shipping labels, product labels, receipts, and small-business packaging.'
-  },
-  {
-    id: 'label-maker',
-    name: 'Portable Label Maker',
-    category: 'Printing',
-    price: 42,
+    price: 12000,
     origin: 'Imported',
     tag: 'Handy',
-    image: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?auto=format&fit=crop&w=800&q=82',
-    description: 'Portable labeling tool for organizing products, storage boxes, shelves, packages, and everyday items.'
+    image: 'https://loremflickr.com/800/600/makeup,organizer',
+    description: 'A practical organizer for keeping cosmetics, brushes, skincare items, and beauty accessories tidy.'
   },
-
   {
-    id: 'tool-kit',
-    name: 'Multi-Purpose Tool Kit',
-    category: 'Tools',
-    price: 68,
+    id: 'jewelry-organizer',
+    name: 'Portable Jewelry Organizer',
+    category: 'Accessories',
+    price: 10000,
     origin: 'Imported',
-    tag: 'Workshop',
-    image: 'https://images.unsplash.com/photo-1581147036324-c1c0c0e0c6b3?auto=format&fit=crop&w=800&q=82',
-    description: 'A useful collection of everyday hand tools for repairs, maintenance, assembly, and workshop projects.'
+    tag: 'Travel',
+    image: 'https://loremflickr.com/800/600/jewelry,organizer',
+    description: 'A compact travel organizer for storing rings, earrings, necklaces, bracelets, and other small accessories.'
   },
   {
-    id: 'cordless-drill',
-    name: 'Cordless Power Drill',
-    category: 'Tools',
-    price: 110,
+    id: 'power-bank',
+    name: 'Portable Power Bank 20,000mAh',
+    category: 'Electronics',
+    price: 25000,
     origin: 'Imported',
-    tag: 'Popular',
-    image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=800&q=82',
-    description: 'Rechargeable drill for household repairs, furniture assembly, DIY projects, and workshop tasks.'
-  },
-
-  {
-    id: 'electric-cooker',
-    name: 'Portable Electric Cooker',
-    category: 'Kitchen',
-    price: 58,
-    origin: 'Imported',
-    tag: 'Kitchen',
-    image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=82',
-    description: 'Compact electric cooker designed for everyday cooking in homes, small kitchens, and food businesses.'
+    tag: 'Essential',
+    image: 'https://loremflickr.com/800/600/powerbank,charger',
+    description: 'High-capacity portable power bank for keeping phones and other compatible devices charged while away from a socket.'
   },
   {
-    id: 'food-chopper',
-    name: 'Electric Food Chopper',
-    category: 'Kitchen',
-    price: 45,
+    id: 'rechargeable-mini-fan',
+    name: 'Rechargeable Mini Fan',
+    category: 'Electronics',
+    price: 20000,
     origin: 'Imported',
     tag: 'Everyday',
-    image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=82',
-    description: 'Convenient kitchen helper for chopping vegetables, herbs, meat, and other ingredients.'
+    image: 'https://loremflickr.com/800/600/rechargeable,mini,fan',
+    description: 'A compact rechargeable fan designed for personal cooling at home, work, travel, or outdoors.'
   },
-
   {
-    id: 'digital-scale',
-    name: 'Digital Kitchen Scale',
+    id: 'digital-luggage-scale',
+    name: 'Digital Luggage Scale',
+    category: 'Travel',
+    price: 8500,
+    origin: 'Imported',
+    tag: 'Travel',
+    image: 'https://loremflickr.com/800/600/digital,luggage,scale',
+    description: 'A portable digital scale that helps you check luggage weight before travelling and avoid unexpected baggage charges.'
+  },
+  {
+    id: 'mini-label-printer',
+    name: 'Mini Label Printer',
+    category: 'Business',
+    price: 18000,
+    origin: 'Imported',
+    tag: 'Small Business',
+    image: 'https://loremflickr.com/800/600/label,printer',
+    description: 'A compact label printer for organizing products, packages, storage items, notes, and small-business orders.'
+  },
+  {
+    id: 'bluetooth-speaker',
+    name: 'Portable Bluetooth Speaker',
     category: 'Electronics',
-    price: 28,
+    price: 25000,
+    origin: 'Imported',
+    tag: 'Popular',
+    image: 'https://loremflickr.com/800/600/bluetooth,speaker',
+    description: 'A portable wireless speaker for music, podcasts, parties, and everyday entertainment.'
+  },
+  {
+    id: 'hand-warmer',
+    name: 'USB Rechargeable Hand Warmer',
+    category: 'Electronics',
+    price: 18000,
     origin: 'Imported',
     tag: 'Useful',
-    image: 'https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=800&q=82',
-    description: 'Accurate digital scale for cooking, baking, portioning, packaging, and small-business use.'
+    image: 'https://loremflickr.com/800/600/handwarmer,electronic',
+    description: 'A compact rechargeable hand warmer designed for convenient portable warmth when needed.'
   },
   {
-    id: 'usb-lamp',
-    name: 'Rechargeable LED Work Lamp',
-    category: 'Electronics',
-    price: 32,
-    origin: 'Imported',
-    tag: 'New',
-    image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=82',
-    description: 'Portable rechargeable LED light for desks, workshops, emergency use, and everyday tasks.'
-  },
-
-  {
-    id: 'storage-box',
-    name: 'Stackable Storage Box Set',
-    category: 'Household',
-    price: 36,
-    origin: 'Imported',
-    tag: 'Home',
-    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=82',
-    description: 'Practical storage boxes for organizing clothes, household items, supplies, and small products.'
-  },
-  {
-    id: 'cleaning-set',
-    name: 'Home Cleaning Tool Set',
-    category: 'Household',
-    price: 40,
+    id: 'electric-air-pump',
+    name: 'Portable Electric Air Pump',
+    category: 'Automotive',
+    price: 30000,
     origin: 'Imported',
     tag: 'Practical',
-    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=82',
-    description: 'A useful collection of cleaning tools for keeping kitchens, rooms, offices, and workspaces tidy.'
+    image: 'https://loremflickr.com/800/600/electric,air,pump',
+    description: 'A portable electric pump for inflating compatible tyres, balls, bicycles, and other inflatable items.'
+  },
+  {
+    id: 'motion-sensor-night-light',
+    name: 'Motion Sensor LED Night Light',
+    category: 'Household',
+    price: 8000,
+    origin: 'Imported',
+    tag: 'Home',
+    image: 'https://loremflickr.com/800/600/motion,sensor,night,light',
+    description: 'A compact LED light that automatically turns on when motion is detected, useful for halls, bedrooms, stairs, and cupboards.'
+  },
+  {
+    id: 'milk-frother',
+    name: 'Electric Milk Frother',
+    category: 'Kitchen',
+    price: 9500,
+    origin: 'Imported',
+    tag: 'Kitchen',
+    image: 'https://loremflickr.com/800/600/milk,frother',
+    description: 'A handheld electric frother for preparing creamy coffee, cappuccino, hot chocolate, and other drinks.'
+  },
+  {
+    id: 'digital-kitchen-scale',
+    name: 'Digital Kitchen Scale',
+    category: 'Kitchen',
+    price: 12000,
+    origin: 'Imported',
+    tag: 'Useful',
+    image: 'https://loremflickr.com/800/600/digital,kitchen,scale',
+    description: 'A compact digital kitchen scale for accurately measuring ingredients during cooking and baking.'
+  },
+  {
+    id: 'electric-food-chopper',
+    name: 'Rechargeable Electric Food Chopper',
+    category: 'Kitchen',
+    price: 18000,
+    origin: 'Imported',
+    tag: 'Everyday',
+    image: 'https://loremflickr.com/800/600/electric,food,chopper',
+    description: 'A rechargeable mini food chopper for quickly preparing onions, vegetables, herbs, and other ingredients.'
+  },
+  {
+    id: 'oil-spray-bottle',
+    name: 'Oil Spray Bottle',
+    category: 'Kitchen',
+    price: 6000,
+    origin: 'Imported',
+    tag: 'Handy',
+    image: 'https://loremflickr.com/800/600/oil,spray,bottle,kitchen',
+    description: 'A reusable kitchen oil sprayer for controlled application of cooking oil, vinegar, dressings, and other liquids.'
   }
 ];
 const $ = (selector, root=document) => root.querySelector(selector);
@@ -201,7 +213,7 @@ let toastTimer;
 
 function loadCart(){try{return JSON.parse(localStorage.getItem('parcel-pine-cart'))||{}}catch{return {}}}
 function saveCart(){localStorage.setItem('parcel-pine-cart',JSON.stringify(cart));renderCart()}
-function money(value){return `$${value.toFixed(2)}`}
+function money(value){return "₦"+value.toLocaleString("en-NG")}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function showToast(message){const toast=$('#toast');toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2400)}
 async function createOrder(customerEmail,total){
