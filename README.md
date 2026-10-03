@@ -18,16 +18,16 @@ The full shop, including its serverless email endpoint, must be deployed to a ho
 To deploy on Vercel:
 
 1. Import this GitHub repository into Vercel. Keep the project root at the repository root; no build command or output directory is needed.
-2. In Mailgun, verify a sending domain and complete its DNS setup with your domain provider. A Mailgun sandbox domain can only deliver to recipients you have authorized.
-3. In Vercel project settings, add the environment variables listed in `.env.example`: use the verified domain, keep the API key private, choose the correct US/EU region, and set the shop notification email.
+2. In the Gmail account that will send shop email, enable 2-Step Verification and create an App Password. Do not use the account's normal password.
+3. In Vercel project settings, add the environment variables listed in `.env.example`. Keep the App Password private and set `ORDER_NOTIFICATION_EMAIL` to the address that should receive order alerts.
 4. Redeploy after saving the environment variables.
-5. Use the Vercel URL as the shop URL. The `/api/send-email` function will then send newsletter email and order confirmations through Mailgun.
+5. Use the Vercel URL as the shop URL. The `/api/send-email` function will then send newsletter emails and order confirmations through Gmail SMTP.
 
-Checkout saves the customer email and order total in Supabase but does not take payment or collect shipping details. Mailgun sends an order-request confirmation to the customer and a notification to the shop owner; the confirmation does not mean payment was taken.
+Checkout saves the customer email and order total in Supabase but does not take payment or collect shipping details. Gmail sends an order-request confirmation to the customer and a notification to the shop owner; the confirmation does not mean payment was taken.
 
 Google sign-in and order storage also depend on the Supabase project configured in the JavaScript. Add the deployed Vercel URL to that Supabase project's allowed redirect URLs. If you do not have access to that Supabase project, its owner must make this change and confirm the orders table is configured.
 
-Keep `.env` files and API keys private. `.env.example` contains placeholders only; do not replace them with real credentials in a commit.
+Keep `.env` files and App Passwords private. `.env.example` contains placeholders only; do not replace them with real credentials in a commit. Gmail has sending limits and may block sign-in if 2-Step Verification and an App Password are not configured.
 
 ## Local preview
 

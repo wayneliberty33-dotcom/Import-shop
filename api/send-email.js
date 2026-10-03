@@ -1,26 +1,35 @@
-function getMailgunEndpoint(domain, region) {
-  const host = region === "eu" ? "api.eu.mailgun.net" : "api.mailgun.net";
-  return `https://${host}/v3/${domain}/messages`;
+import nodemailer from "nodemailer";
+
+let transporter;
+
+function getTransporter() {
+  const user = process.env.GMAIL_SMTP_USER;
+  const password = process.env.GMAIL_SMTP_APP_PASSWORD;
+  if (!user || !password) {
+    throw new Error("Gmail SMTP environment variables are missing");
+  }
+
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user,
+        pass: password.replace(/\s/g, ""),
+      },
+    });
+  }
+  return transporter;
 }
 
-async function sendMailgunMessage({ domain, apiKey, region, message }) {
-  const response = await fetch(getMailgunEndpoint(domain, region), {
-    method: "POST",
-    headers: {
-      Authorization: "Basic " + Buffer.from(`api:${apiKey}`).toString("base64"),
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      from: `LIBWAY SHOP <postmaster@${domain}>`,
-      ...message,
-    }),
+async function sendEmail(message) {
+  const user = process.env.GMAIL_SMTP_USER;
+  const mailer = getTransporter();
+  await mailer.sendMail({
+    from: `LIBWAY SHOP <${user}>`,
+    ...message,
   });
-
-  if (!response.ok) {
-    const details = await response.text();
-    console.error(`Mailgun request failed (${response.status}):`, details);
-    throw new Error(`Mailgun request failed with HTTP ${response.status}`);
-  }
 }
 
 export default async function handler(req, res) {
@@ -30,16 +39,6 @@ export default async function handler(req, res) {
 
   const body = req.body || {};
   const type = body.type || "newsletter";
-  const domain = process.env.MAILGUN_DOMAIN;
-  const apiKey = process.env.MAILGUN_API_KEY;
-  const region = process.env.MAILGUN_REGION || "us";
-
-  if (!domain || !apiKey) {
-    return res.status(500).json({ error: "Mailgun environment variables are missing" });
-  }
-  if (!["us", "eu"].includes(region)) {
-    return res.status(500).json({ error: "MAILGUN_REGION must be either us or eu" });
-  }
 
   if (type === "newsletter") {
     const email = typeof body.email === "string" ? body.email.trim() : "";
@@ -48,19 +47,14 @@ export default async function handler(req, res) {
     }
 
     try {
-      await sendMailgunMessage({
-        domain,
-        apiKey,
-        region,
-        message: {
-          to: email,
-          subject: "Welcome to LIBWAY SHOP",
-          text: "Thanks for joining the LIBWAY SHOP list. We will keep you posted about new finds and updates.",
-        },
+      await sendEmail({
+        to: email,
+        subject: "Welcome to LIBWAY SHOP",
+        text: "Thanks for joining the LIBWAY SHOP list. We will keep you posted about new finds and updates.",
       });
       return res.status(200).json({ success: true });
     } catch (error) {
-      console.error("Newsletter email failed:", error);
+      console.error("Newsletter email failed:", error.message);
       return res.status(502).json({ error: "Could not send newsletter email" });
     }
   }
@@ -91,15 +85,20 @@ export default async function handler(req, res) {
     text: `A new order request was saved.\n\nCustomer email: ${customerEmail}\nOrder total: ${formattedTotal}\n\nThis shop demo does not process payments or collect shipping details.`,
   };
 
-  const results = await Promise.allSettled([
-    sendMailgunMessage({ domain, apiKey, region, message: customerMessage }),
-    sendMailgunMessage({ domain, apiKey, region, message: shopMessage }),
-  ]);
-  const failures = results.filter((result) => result.status === "rejected");
-  if (failures.length) {
-    console.error("Order confirmation email delivery failed:", failures.map((failure) => failure.reason));
-    return res.status(502).json({ error: "The order was saved, but one or more confirmation emails could not be sent" });
-  }
+  try {
+    const results = await Promise.allSettled([
+      sendEmail(customerMessage),
+      sendEmail(shopMessage),
+    ]);
+    const failures = results.filter((result) => result.status === "rejected");
+    if (failures.length) {
+      console.error("Order confirmation email delivery failed:", failures.map((failure) => failure.reason.message));
+      return res.status(502).json({ error: "The order was saved, but one or more confirmation emails could not be sent" });
+    }
 
-  return res.status(200).json({ success: true });
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Order confirmation email failed:", error.message);
+    return res.status(502).json({ error: "The order was saved, but confirmation emails could not be sent" });
+  }
 }
