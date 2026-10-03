@@ -4,14 +4,194 @@ const OAUTH_REDIRECT_URL = 'https://wayneliberty33-dotcom.github.io/Import-shop/
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const products = [
-  {id:'glass-cup',name:'Sunday Glass Cup',category:'Home',price:18,origin:'Made in Japan',tag:'Bestseller',image:'assets/sunday-glass-cup.svg',description:'A beautifully simple glass for slow mornings and long lunches. Made from sturdy, recycled glass with a softly rounded silhouette.'},
-  {id:'incense',name:'Hinoki Incense Set',category:'Home',price:24,origin:'Made in Japan',tag:'Small batch',image:'https://images.unsplash.com/photo-1602874801007-bd458bb1b8b6?auto=format&fit=crop&w=800&q=82',description:'A quiet, woodsy ritual for the end of the day. Notes of hinoki, cedar, and a hint of citrus, hand-rolled in Kyoto.'},
-  {id:'hand-cream',name:'Dewdrop Hand Cream',category:'Beauty',price:16,origin:'Made in South Korea',tag:'',image:'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=800&q=82',description:'A light, quick-absorbing cream with shea butter and green tea. Leaves hands soft, never sticky, with a gentle botanical scent.'},
-  {id:'tea',name:'Yuzu Green Tea',category:'Pantry',price:14,origin:'Grown in Japan',tag:'Staff favorite',image:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=800&q=82',description:'Bright yuzu peel meets mellow green tea in this lovely afternoon cup. Packed in compostable sachets by a family tea house.'},
-  {id:'linen-towel',name:'Waffle Linen Towel',category:'Home',price:32,origin:'Made in Lithuania',tag:'',image:'https://images.unsplash.com/photo-1600369671236-e74521d4b6ad?auto=format&fit=crop&w=800&q=82',description:'A soft, quick-drying linen-cotton waffle towel that gets even lovelier with every wash. Woven in a small family mill.'},
-  {id:'face-oil',name:'Camellia Face Oil',category:'Beauty',price:29,origin:'Made in South Korea',tag:'New',image:'https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?auto=format&fit=crop&w=800&q=82',description:'A few drops of cold-pressed camellia oil bring a dewy glow. Fragrance-free, wonderfully simple, and suited to every skin type.'},
-  {id:'chili-crisp',name:'Crispy Chili Crunch',category:'Pantry',price:12,origin:'Made in Taiwan',tag:'A little spicy',image:'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=82',description:'Crunchy shallots, toasted garlic, and just the right amount of heat. Spoon it over noodles, eggs, rice, or absolutely everything.'},
-  {id:'market-tote',name:'Everywhere Market Tote',category:'Accessories',price:26,origin:'Made in Portugal',tag:'',image:'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=82',description:'A sturdy everyday carryall in heavyweight organic cotton. Room for the farmers market, a good book, and a few happy accidents.'}
+  {
+    id: 'sewing-machine',
+    name: 'Portable Sewing Machine',
+    category: 'Sewing',
+    price: 85,
+    origin: 'Imported',
+    tag: 'Popular',
+    image: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=800&q=82',
+    description: 'A compact sewing machine for everyday repairs, small clothing projects, and home-based sewing businesses.'
+  },
+  {
+    id: 'thread-machine',
+    name: 'Industrial Thread Machine',
+    category: 'Sewing',
+    price: 145,
+    origin: 'Imported',
+    tag: 'Business',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=82',
+    description: 'A practical machine designed for frequent sewing work and small production businesses.'
+  },
+
+  {
+    id: 'nail-drill',
+    name: 'Professional Nail Drill',
+    category: 'Beauty',
+    price: 48,
+    origin: 'Imported',
+    tag: 'Beauty',
+    image: 'https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=800&q=82',
+    description: 'Adjustable-speed nail drill suitable for manicures, pedicures, nail preparation, and salon use.'
+  },
+  {
+    id: 'nail-lamp',
+    name: 'UV LED Nail Lamp',
+    category: 'Beauty',
+    price: 35,
+    origin: 'Imported',
+    tag: 'New',
+    image: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=82',
+    description: 'Fast-curing LED nail lamp for gel polish, home nail care, and professional beauty work.'
+  },
+
+  {
+    id: 'heat-sealer',
+    name: 'Impulse Heat Sealer',
+    category: 'Packaging',
+    price: 55,
+    origin: 'Imported',
+    tag: 'Small Business',
+    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=82',
+    description: 'A compact sealing machine for closing plastic bags, food packaging, and small retail products.'
+  },
+  {
+    id: 'vacuum-sealer',
+    name: 'Compact Vacuum Sealer',
+    category: 'Packaging',
+    price: 72,
+    origin: 'Imported',
+    tag: 'Practical',
+    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=82',
+    description: 'Useful for keeping food and products sealed, organized, and protected during storage.'
+  },
+
+  {
+    id: 'heat-press',
+    name: 'Digital Heat Press Machine',
+    category: 'HeatPress',
+    price: 185,
+    origin: 'Imported',
+    tag: 'Business',
+    image: 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=800&q=82',
+    description: 'Digital heat press for transferring designs onto T-shirts, bags, fabrics, and other suitable materials.'
+  },
+  {
+    id: 'mini-heat-press',
+    name: 'Mini Heat Press',
+    category: 'HeatPress',
+    price: 65,
+    origin: 'Imported',
+    tag: 'Compact',
+    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=82',
+    description: 'Small and convenient heat press for crafts, personalized gifts, small clothing projects, and home businesses.'
+  },
+
+  {
+    id: 'label-printer',
+    name: 'Thermal Label Printer',
+    category: 'Printing',
+    price: 95,
+    origin: 'Imported',
+    tag: 'Business',
+    image: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?auto=format&fit=crop&w=800&q=82',
+    description: 'Compact thermal printer for shipping labels, product labels, receipts, and small-business packaging.'
+  },
+  {
+    id: 'label-maker',
+    name: 'Portable Label Maker',
+    category: 'Printing',
+    price: 42,
+    origin: 'Imported',
+    tag: 'Handy',
+    image: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?auto=format&fit=crop&w=800&q=82',
+    description: 'Portable labeling tool for organizing products, storage boxes, shelves, packages, and everyday items.'
+  },
+
+  {
+    id: 'tool-kit',
+    name: 'Multi-Purpose Tool Kit',
+    category: 'Tools',
+    price: 68,
+    origin: 'Imported',
+    tag: 'Workshop',
+    image: 'https://images.unsplash.com/photo-1581147036324-c1c0c0e0c6b3?auto=format&fit=crop&w=800&q=82',
+    description: 'A useful collection of everyday hand tools for repairs, maintenance, assembly, and workshop projects.'
+  },
+  {
+    id: 'cordless-drill',
+    name: 'Cordless Power Drill',
+    category: 'Tools',
+    price: 110,
+    origin: 'Imported',
+    tag: 'Popular',
+    image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=800&q=82',
+    description: 'Rechargeable drill for household repairs, furniture assembly, DIY projects, and workshop tasks.'
+  },
+
+  {
+    id: 'electric-cooker',
+    name: 'Portable Electric Cooker',
+    category: 'Kitchen',
+    price: 58,
+    origin: 'Imported',
+    tag: 'Kitchen',
+    image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=82',
+    description: 'Compact electric cooker designed for everyday cooking in homes, small kitchens, and food businesses.'
+  },
+  {
+    id: 'food-chopper',
+    name: 'Electric Food Chopper',
+    category: 'Kitchen',
+    price: 45,
+    origin: 'Imported',
+    tag: 'Everyday',
+    image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=82',
+    description: 'Convenient kitchen helper for chopping vegetables, herbs, meat, and other ingredients.'
+  },
+
+  {
+    id: 'digital-scale',
+    name: 'Digital Kitchen Scale',
+    category: 'Electronics',
+    price: 28,
+    origin: 'Imported',
+    tag: 'Useful',
+    image: 'https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=800&q=82',
+    description: 'Accurate digital scale for cooking, baking, portioning, packaging, and small-business use.'
+  },
+  {
+    id: 'usb-lamp',
+    name: 'Rechargeable LED Work Lamp',
+    category: 'Electronics',
+    price: 32,
+    origin: 'Imported',
+    tag: 'New',
+    image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=82',
+    description: 'Portable rechargeable LED light for desks, workshops, emergency use, and everyday tasks.'
+  },
+
+  {
+    id: 'storage-box',
+    name: 'Stackable Storage Box Set',
+    category: 'Household',
+    price: 36,
+    origin: 'Imported',
+    tag: 'Home',
+    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=82',
+    description: 'Practical storage boxes for organizing clothes, household items, supplies, and small products.'
+  },
+  {
+    id: 'cleaning-set',
+    name: 'Home Cleaning Tool Set',
+    category: 'Household',
+    price: 40,
+    origin: 'Imported',
+    tag: 'Practical',
+    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=82',
+    description: 'A useful collection of cleaning tools for keeping kitchens, rooms, offices, and workspaces tidy.'
+  }
 ];
 const $ = (selector, root=document) => root.querySelector(selector);
 const $$ = (selector, root=document) => [...root.querySelectorAll(selector)];
