@@ -6,3 +6,5 @@
 .account-signed-out{display:flex;align-items:center;justify-content:space-between;gap:24px}.account-signed-out[hidden],#account-signed-in[hidden]{display:none}.account-signed-out .eyebrow{margin-bottom:8px}.account-signed-out h2{font:500 30px/1.15 var(--serif);letter-spacing:-.04em;margin:0}.account-prompt{margin:7px 0 0;color:#696f64;font-size:12px}.account-signed-out .google-sign-in{margin-top:0}@media(max-width:700px){.account-signed-out{align-items:flex-start;flex-direction:column;gap:15px}.account-signed-out h2{font-size:25px}}
 #account-signed-out:not([hidden]) > #account-google-sign-in{display:inline-flex;visibility:visible;opacity:1;min-height:48px;padding:14px 20px;font-size:12px}
 @media(max-width:700px){#account-signed-out:not([hidden]) > #account-google-sign-in{align-self:stretch}}
+.product-image{background:#f8f5f1}
+.product-image img,.cart-item img,.modal-product>img{object-fit:contain}
