@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { isVerifiedPayment, paystackRequest } from "./paystack.js";
 
 let transporter;
 
@@ -63,12 +64,25 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Unsupported email type" });
   }
 
-  const customerEmail = typeof body.email === "string" ? body.email.trim() : "";
-  const total = Number(body.total);
-  const notificationEmail = process.env.ORDER_NOTIFICATION_EMAIL;
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail) || !Number.isFinite(total) || total <= 0) {
-    return res.status(400).json({ error: "A valid customer email and order total are required" });
+  const reference = typeof body.reference === "string" ? body.reference : "";
+  if (!/^libway-[\w-]{36}$/.test(reference)) {
+    return res.status(400).json({ error: "A valid payment reference is required" });
   }
+
+  let payment;
+  try {
+    payment = await paystackRequest(`/transaction/verify/${encodeURIComponent(reference)}`);
+  } catch (error) {
+    console.error("Order payment verification failed:", error.message);
+    return res.status(502).json({ error: "The payment could not be verified" });
+  }
+  if (!isVerifiedPayment(payment, reference)) {
+    return res.status(402).json({ error: "The payment has not been verified as successful" });
+  }
+
+  const customerEmail = payment.customer.email;
+  const total = payment.amount / 100;
+  const notificationEmail = process.env.ORDER_NOTIFICATION_EMAIL;
   if (!notificationEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(notificationEmail)) {
     return res.status(500).json({ error: "Order notification email is not configured" });
   }
@@ -76,13 +90,13 @@ export default async function handler(req, res) {
   const formattedTotal = `₦${total.toLocaleString("en-NG")}`;
   const customerMessage = {
     to: customerEmail,
-    subject: "We received your order | LIBWAY SHOP",
-    text: `Thank you for shopping with LIBWAY SHOP. We received your order request with a total of ${formattedTotal}.\n\nThis shop demo does not process payments or collect shipping details, so this email confirms that your order request was saved, not that payment was taken. We will follow up with you by email.`,
+    subject: "Payment confirmed | LIBWAY SHOP",
+    text: `Thank you for shopping with LIBWAY SHOP. Your payment of ${formattedTotal} has been confirmed.\n\nPayment reference: ${reference}\nWe will follow up with you by email about your order.`,
   };
   const shopMessage = {
     to: notificationEmail,
-    subject: "New order request | LIBWAY SHOP",
-    text: `A new order request was saved.\n\nCustomer email: ${customerEmail}\nOrder total: ${formattedTotal}\n\nThis shop demo does not process payments or collect shipping details.`,
+    subject: "Paid order | LIBWAY SHOP",
+    text: `A payment has been confirmed.\n\nCustomer email: ${customerEmail}\nOrder total: ${formattedTotal}\nPayment reference: ${reference}`,
   };
 
   try {
@@ -92,13 +106,13 @@ export default async function handler(req, res) {
     ]);
     const failures = results.filter((result) => result.status === "rejected");
     if (failures.length) {
-      console.error("Order confirmation email delivery failed:", failures.map((failure) => failure.reason.message));
-      return res.status(502).json({ error: "The order was saved, but one or more confirmation emails could not be sent" });
+      console.error("Paid order email delivery failed:", failures.map((failure) => failure.reason.message));
+      return res.status(502).json({ error: "The payment succeeded, but one or more confirmation emails could not be sent" });
     }
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    console.error("Order confirmation email failed:", error.message);
-    return res.status(502).json({ error: "The order was saved, but confirmation emails could not be sent" });
+    console.error("Paid order email failed:", error.message);
+    return res.status(502).json({ error: "The payment succeeded, but confirmation emails could not be sent" });
   }
 }

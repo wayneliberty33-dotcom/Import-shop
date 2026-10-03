@@ -245,14 +245,14 @@ function renderProducts(){
 function renderCart(){
   const entries=Object.entries(cart).filter(([,qty])=>qty>0);const count=entries.reduce((sum,[,qty])=>sum+qty,0);const total=entries.reduce((sum,[id,qty])=>sum+products.find(p=>p.id===id).price*qty,0);
   $('.cart-count').textContent=count;$('.drawer-count').textContent=`(${count})`;$('#cart-total').textContent=money(total);$('#cart-items').innerHTML=entries.map(([id,qty])=>{const p=products.find(item=>item.id===id);return `<div class="cart-item"><img src="${p.image}" alt=""><div><h3>${escapeHtml(p.name)}</h3><span class="origin">${escapeHtml(p.origin)}</span><div class="quantity-control"><button data-qty="${id}" data-delta="-1" aria-label="Decrease ${escapeHtml(p.name)} quantity">−</button><span>${qty}</span><button data-qty="${id}" data-delta="1" aria-label="Increase ${escapeHtml(p.name)} quantity">+</button></div></div><div><span class="cart-item-price">${money(p.price*qty)}</span><button class="remove-item" data-remove="${id}">Remove</button></div></div>`}).join('');
-  $('#cart-empty').hidden=count>0;$('#cart-footer').hidden=count===0;$('#shipping-message').textContent=total>=75?'You unlocked free US shipping ✳':`You're ${money(75-total)} away from free shipping ✳`;
+  $('#cart-empty').hidden=count>0;$('#cart-footer').hidden=count===0;$('#shipping-message').textContent='Delivery details are arranged after your order is confirmed ✳';
 }
 function addToCart(id,qty=1){cart[id]=(cart[id]||0)+qty;saveCart();showToast(`${products.find(p=>p.id===id).name} added to your bag`)}
 function openOverlay(){const overlay=$('#overlay');overlay.hidden=false;requestAnimationFrame(()=>overlay.classList.add('show'))}
 function closeAll(){const drawer=$('#cart-drawer');drawer.classList.remove('open');drawer.setAttribute('aria-hidden','true');$('#overlay').classList.remove('show');setTimeout(()=>$('#overlay').hidden=true,250);$$('.modal-wrap').forEach(m=>m.hidden=true);document.body.style.overflow=''}
 function openCart(){openOverlay();$('#cart-drawer').classList.add('open');$('#cart-drawer').setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
 function openProduct(id){const p=products.find(item=>item.id===id);$('#modal-product').innerHTML=`<img src="${p.image}" alt="${escapeHtml(p.name)}"><div><p class="eyebrow">${escapeHtml(p.category)} · ${escapeHtml(p.origin)}</p><h2>${escapeHtml(p.name)}</h2><span class="modal-price">${money(p.price)}</span><p class="description">${escapeHtml(p.description)}</p><span class="modal-origin">Thoughtfully sourced · Ships with care</span><br><button class="button button-dark" data-add="${p.id}">Add to bag <span>↗</span></button></div>`;openOverlay();$('#product-modal').hidden=false;document.body.style.overflow='hidden'}
-function openCheckout(){if(!Object.keys(cart).length)return;const subtotal=Object.entries(cart).reduce((s,[id,q])=>s+products.find(p=>p.id===id).price*q,0);$('#checkout-summary').textContent=`Your finds total ${money(subtotal)}${subtotal>=75?' · free US shipping':''}.`;$('#checkout-modal').hidden=false;document.body.style.overflow='hidden'}
+function openCheckout(){if(!Object.keys(cart).length)return;const subtotal=Object.entries(cart).reduce((s,[id,q])=>s+products.find(p=>p.id===id).price*q,0);$('#checkout-summary').textContent=`Your finds total ${money(subtotal)}. Pay securely in Nigerian naira with Paystack.`;$('#checkout-modal').hidden=false;document.body.style.overflow='hidden'}
 let currentUser=null;
 function renderOrderHistory(orders){
   $('#order-history').innerHTML=orders.map(order=>{
@@ -345,40 +345,99 @@ $('#checkout-form').addEventListener('submit',async e=>{
   const form=e.currentTarget;
   if(!form.reportValidity())return;
   const customerEmail=new FormData(form).get('email').trim();
-  const total=Object.entries(cart).reduce((sum,[id,qty])=>sum+products.find(p=>p.id===id).price*qty,0);
+  const items=Object.entries(cart).filter(([,quantity])=>quantity>0).map(([id,quantity])=>({id,quantity}));
   const submitButton=form.querySelector('[type="submit"]');
   const status=$('#checkout-status');
   submitButton.disabled=true;
   status.hidden=false;
-  status.textContent='Saving your order…';
+  status.textContent='Opening secure checkout…';
   try{
-    await createOrder(customerEmail,total);
-    cart={};
-    saveCart();
-    closeAll();
-    form.reset();
-    status.textContent='';
-    status.hidden=true;
-    try{
-      const response=await fetch('/api/send-email',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({type:'order_confirmation',email:customerEmail,total})
-      });
-      const result=await response.json().catch(()=>({}));
-      if(!response.ok)throw new Error(result.error||'Order confirmation emails could not be sent');
-      showToast('Your order was saved. Check your email for confirmation.');
-    }catch(emailError){
-      console.error('Order confirmation email failed:',emailError);
-      showToast('Your order was saved, but confirmation emails could not be sent.');
-    }
+    const response=await fetch('/api/initialize-payment',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email:customerEmail,items})
+    });
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(result.error||'Secure checkout could not be started');
+    if(typeof result.authorizationUrl!=='string')throw new Error('Secure checkout returned an invalid payment link');
+    window.location.assign(result.authorizationUrl);
   }catch(error){
-    console.error(error);
-    status.textContent='We could not save your order. Please try again in a moment.';
+    console.error('Paystack checkout could not be started:',error);
+    status.textContent=error.message||'Secure checkout could not be started. Please try again.';
   }finally{
     submitButton.disabled=false;
   }
 });
+async function completePaymentReturn(){
+  const query=new URLSearchParams(window.location.search);
+  const reference=query.get('reference')||query.get('trxref');
+  if(!reference)return;
+
+  const form=$('#checkout-form');
+  const submitButton=form.querySelector('[type="submit"]');
+  const status=$('#checkout-status');
+  $('#checkout-modal').hidden=false;
+  openOverlay();
+  document.body.style.overflow='hidden';
+  status.hidden=false;
+  submitButton.disabled=true;
+  status.textContent='Verifying your payment…';
+
+  const completedKey=`libway-paid-reference:${reference}`;
+  if(sessionStorage.getItem(completedKey)==='saved'){
+    history.replaceState({},'',window.location.pathname+window.location.hash);
+    closeAll();
+    showToast('Your payment and order are confirmed.');
+    return;
+  }
+
+  let paymentConfirmed=false;
+  try{
+    const response=await fetch('/api/verify-payment',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({reference})
+    });
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(result.error||'Payment could not be verified');
+    paymentConfirmed=true;
+    const expectedItems=Object.entries(cart).filter(([,quantity])=>quantity>0).map(([id,quantity])=>({id,quantity})).sort((a,b)=>a.id.localeCompare(b.id));
+    const paidItems=Array.isArray(result.items)?result.items.map(item=>({id:item.id,quantity:item.quantity})).sort((a,b)=>a.id.localeCompare(b.id)):[];
+    const sameItems=JSON.stringify(expectedItems)===JSON.stringify(paidItems);
+    const cartTotal=expectedItems.reduce((sum,item)=>sum+products.find(product=>product.id===item.id).price*item.quantity,0);
+    if(!sameItems||result.total!==cartTotal){
+      throw new Error(`Payment was received, but the order details did not match. Contact the shop with reference ${reference}; please do not pay again.`);
+    }
+
+    form.elements.email.value=result.email;
+    await createOrder(result.email,result.total);
+    sessionStorage.setItem(completedKey,'saved');
+    cart={};
+    saveCart();
+    history.replaceState({},'',window.location.pathname+window.location.hash);
+    form.reset();
+    closeAll();
+    try{
+      const emailResponse=await fetch('/api/send-email',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({type:'order_confirmation',reference})
+      });
+      const emailResult=await emailResponse.json().catch(()=>({}));
+      if(!emailResponse.ok)throw new Error(emailResult.error||'Confirmation emails could not be sent');
+      showToast('Payment confirmed. Check your email for your receipt.');
+    }catch(emailError){
+      console.error('Paid order email failed:',emailError);
+      showToast('Payment and order confirmed, but the confirmation email could not be sent.');
+    }
+  }catch(error){
+    console.error('Could not complete the paid order:',error);
+    status.textContent=error.message||'Payment could not be verified. Please try again.';
+    if(paymentConfirmed)submitButton.disabled=true;
+  }finally{
+    if(!paymentConfirmed)submitButton.disabled=false;
+  }
+}
 $('#newsletter-form').addEventListener('submit',async e=>{
   e.preventDefault();
   const form=e.currentTarget;
@@ -405,4 +464,4 @@ $('#newsletter-form').addEventListener('submit',async e=>{
     button.innerHTML='Count me in <span>↗</span>';
   }
 });
-renderProducts();renderCart();
+renderProducts();renderCart();completePaymentReturn();
