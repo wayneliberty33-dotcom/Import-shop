@@ -1,6 +1,6 @@
 const SUPABASE_URL = 'https://uniwyjgamivvhefiewvk.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_SKYxuMy_7x7J-YTb23_94w_Jp4pKYzI';
-const OAUTH_REDIRECT_URL = 'https://wayneliberty33-dotcom.github.io/Import-shop/';
+const OAUTH_REDIRECT_URL = new URL('./', window.location.href).href;
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 const $ = (selector) => document.querySelector(selector);
 

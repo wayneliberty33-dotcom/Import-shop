@@ -1,6 +1,6 @@
 const SUPABASE_URL = 'https://uniwyjgamivvhefiewvk.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_SKYxuMy_7x7J-YTb23_94w_Jp4pKYzI';
-const OAUTH_REDIRECT_URL = 'https://wayneliberty33-dotcom.github.io/Import-shop/';
+const OAUTH_REDIRECT_URL = new URL('./', window.location.href).href;
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const products = [
@@ -359,7 +359,19 @@ $('#checkout-form').addEventListener('submit',async e=>{
     form.reset();
     status.textContent='';
     status.hidden=true;
-    showToast('Your order has been saved. Thank you!');
+    try{
+      const response=await fetch('/api/send-email',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({type:'order_confirmation',email:customerEmail,total})
+      });
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(result.error||'Order confirmation emails could not be sent');
+      showToast('Your order was saved. Check your email for confirmation.');
+    }catch(emailError){
+      console.error('Order confirmation email failed:',emailError);
+      showToast('Your order was saved, but confirmation emails could not be sent.');
+    }
   }catch(error){
     console.error(error);
     status.textContent='We could not save your order. Please try again in a moment.';
