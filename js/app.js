@@ -1,219 +1,71 @@
 const SUPABASE_URL = 'https://uniwyjgamivvhefiewvk.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_SKYxuMy_7x7J-YTb23_94w_Jp4pKYzI';
-const OAUTH_REDIRECT_URL = new URL('./', window.location.href).href;
+const OAUTH_REDIRECT_URL = 'https://wayneliberty33-dotcom.github.io/Import-shop/';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const products = [
-  {
-    id: 'smart-watch',
-    name: 'Smart Watch',
-    category: 'Electronics',
-    price: 18500,
-    origin: 'Imported',
-    tag: 'Popular',
-    image: 'assets/products/smart-watch.jpg',
-    description: 'A modern smart watch for everyday notifications, fitness tracking, calls, and daily convenience.'
-  },
-  {
-    id: 'wireless-earbuds',
-    name: 'Wireless Earbuds',
-    category: 'Electronics',
-    price: 15000,
-    origin: 'Imported',
-    tag: 'New',
-    image: 'assets/products/wireless-earbuds.jpg',
-    description: 'Compact wireless earbuds with a portable charging case for music, calls, and everyday listening.'
-  },
-  {
-    id: 'electric-shaver',
-    name: 'Electric Shaver & Beard Trimmer',
-    category: 'Grooming',
-    price: 22000,
-    origin: 'Imported',
-    tag: 'Popular',
-    image: 'assets/products/electric-shaver.jpg',
-    description: 'A rechargeable grooming tool for trimming beards, shaping facial hair, and everyday personal care.'
-  },
-  {
-    id: 'car-vacuum',
-    name: 'Portable Car Vacuum Cleaner',
-    category: 'Automotive',
-    price: 25000,
-    origin: 'Imported',
-    tag: 'Practical',
-    image: 'assets/products/car-vacuum.jpg',
-    description: 'A compact rechargeable vacuum for cleaning car seats, floors, dashboards, and tight spaces.'
-  },
-  {
-    id: 'phone-tripod-ring-light',
-    name: 'Phone Tripod with Ring Light',
-    category: 'Accessories',
-    price: 15000,
-    origin: 'Imported',
-    tag: 'Creator Pick',
-    image: 'assets/products/phone-tripod-ring-light.jpg',
-    description: 'Adjustable phone tripod with built-in ring lighting for photos, videos, live streams, and content creation.'
-  },
-  {
-    id: 'mini-hair-styling-kit',
-    name: 'Mini Hair Styling Kit',
-    category: 'Beauty',
-    price: 25000,
-    origin: 'Imported',
-    tag: 'Beauty',
-    image: 'assets/products/hair-styling-kit.jpg',
-    description: 'A compact hair styling set designed for convenient everyday grooming and travel.'
-  },
-  {
-    id: 'makeup-organizer',
-    name: 'Makeup Organizer',
-    category: 'Beauty',
-    price: 12000,
-    origin: 'Imported',
-    tag: 'Handy',
-    image: 'assets/products/makeup-organizer.jpg',
-    description: 'A practical organizer for keeping cosmetics, brushes, skincare items, and beauty accessories tidy.'
-  },
-  {
-    id: 'jewelry-organizer',
-    name: 'Portable Jewelry Organizer',
-    category: 'Accessories',
-    price: 10000,
-    origin: 'Imported',
-    tag: 'Travel',
-    image: 'assets/products/jewelry-organizer.jpg',
-    description: 'A compact travel organizer for storing rings, earrings, necklaces, bracelets, and other small accessories.'
-  },
-  {
-    id: 'power-bank',
-    name: 'Portable Power Bank 20,000mAh',
-    category: 'Electronics',
-    price: 25000,
-    origin: 'Imported',
-    tag: 'Essential',
-    image: 'assets/products/power-bank.jpg',
-    description: 'High-capacity portable power bank for keeping phones and other compatible devices charged while away from a socket.'
-  },
-  {
-    id: 'rechargeable-mini-fan',
-    name: 'Rechargeable Mini Fan',
-    category: 'Electronics',
-    price: 20000,
-    origin: 'Imported',
-    tag: 'Everyday',
-    image: 'assets/products/mini-fan.jpg',
-    description: 'A compact rechargeable fan designed for personal cooling at home, work, travel, or outdoors.'
-  },
-  {
-    id: 'digital-luggage-scale',
-    name: 'Digital Luggage Scale',
-    category: 'Travel',
-    price: 8500,
-    origin: 'Imported',
-    tag: 'Travel',
-    image: 'assets/products/luggage-scale.jpg',
-    description: 'A portable digital scale that helps you check luggage weight before travelling and avoid unexpected baggage charges.'
-  },
-  {
-    id: 'mini-label-printer',
-    name: 'Mini Label Printer',
-    category: 'Business',
-    price: 18000,
-    origin: 'Imported',
-    tag: 'Small Business',
-    image: 'assets/products/label-printer.jpg',
-    description: 'A compact label printer for organizing products, packages, storage items, notes, and small-business orders.'
-  },
-  {
-    id: 'bluetooth-speaker',
-    name: 'Portable Bluetooth Speaker',
-    category: 'Electronics',
-    price: 25000,
-    origin: 'Imported',
-    tag: 'Popular',
-    image: 'assets/products/bluetooth-speaker.jpg',
-    description: 'A portable wireless speaker for music, podcasts, parties, and everyday entertainment.'
-  },
-  {
-    id: 'hand-warmer',
-    name: 'USB Rechargeable Hand Warmer',
-    category: 'Electronics',
-    price: 18000,
-    origin: 'Imported',
-    tag: 'Useful',
-    image: 'assets/products/hand-warmer.jpg',
-    description: 'A compact rechargeable hand warmer designed for convenient portable warmth when needed.'
-  },
-  {
-    id: 'electric-air-pump',
-    name: 'Portable Electric Air Pump',
-    category: 'Automotive',
-    price: 30000,
-    origin: 'Imported',
-    tag: 'Practical',
-    image: 'assets/products/electric-air-pump.jpg',
-    description: 'A portable electric pump for inflating compatible tyres, balls, bicycles, and other inflatable items.'
-  },
-  {
-    id: 'motion-sensor-night-light',
-    name: 'Motion Sensor LED Night Light',
-    category: 'Household',
-    price: 8000,
-    origin: 'Imported',
-    tag: 'Home',
-    image: 'assets/products/night-light.jpg',
-    description: 'A compact LED light that automatically turns on when motion is detected, useful for halls, bedrooms, stairs, and cupboards.'
-  },
-  {
-    id: 'milk-frother',
-    name: 'Electric Milk Frother',
-    category: 'Kitchen',
-    price: 9500,
-    origin: 'Imported',
-    tag: 'Kitchen',
-    image: 'assets/products/milk-frother.jpg',
-    description: 'A handheld electric frother for preparing creamy coffee, cappuccino, hot chocolate, and other drinks.'
-  },
-  {
-    id: 'digital-kitchen-scale',
-    name: 'Digital Kitchen Scale',
-    category: 'Kitchen',
-    price: 12000,
-    origin: 'Imported',
-    tag: 'Useful',
-    image: 'assets/products/kitchen-scale.jpg',
-    description: 'A compact digital kitchen scale for accurately measuring ingredients during cooking and baking.'
-  },
-  {
-    id: 'electric-food-chopper',
-    name: 'Rechargeable Electric Food Chopper',
-    category: 'Kitchen',
-    price: 18000,
-    origin: 'Imported',
-    tag: 'Everyday',
-    image: 'assets/products/food-chopper.jpg',
-    description: 'A rechargeable mini food chopper for quickly preparing onions, vegetables, herbs, and other ingredients.'
-  },
-  {
-    id: 'oil-spray-bottle',
-    name: 'Oil Spray Bottle',
-    category: 'Kitchen',
-    price: 6000,
-    origin: 'Imported',
-    tag: 'Handy',
-    image: 'assets/products/oil-spray-bottle.jpg',
-    description: 'A reusable kitchen oil sprayer for controlled application of cooking oil, vinegar, dressings, and other liquids.'
-  }
+  {id:'glass-cup',name:'Sunday Glass Cup',category:'Home',price:18,origin:'Made in Japan',tag:'Bestseller',image:'assets/sunday-glass-cup.svg',description:'A beautifully simple glass for slow mornings and long lunches. Made from sturdy, recycled glass with a softly rounded silhouette.'},
+  {id:'incense',name:'Hinoki Incense Set',category:'Home',price:24,origin:'Made in Japan',tag:'Small batch',image:'https://images.unsplash.com/photo-1602874801007-bd458bb1b8b6?auto=format&fit=crop&w=800&q=82',description:'A quiet, woodsy ritual for the end of the day. Notes of hinoki, cedar, and a hint of citrus, hand-rolled in Kyoto.'},
+  {id:'hand-cream',name:'Dewdrop Hand Cream',category:'Beauty',price:16,origin:'Made in South Korea',tag:'',image:'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=800&q=82',description:'A light, quick-absorbing cream with shea butter and green tea. Leaves hands soft, never sticky, with a gentle botanical scent.'},
+  {id:'tea',name:'Yuzu Green Tea',category:'Pantry',price:14,origin:'Grown in Japan',tag:'Staff favorite',image:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=800&q=82',description:'Bright yuzu peel meets mellow green tea in this lovely afternoon cup. Packed in compostable sachets by a family tea house.'},
+  {id:'linen-towel',name:'Waffle Linen Towel',category:'Home',price:32,origin:'Made in Lithuania',tag:'',image:'https://images.unsplash.com/photo-1600369671236-e74521d4b6ad?auto=format&fit=crop&w=800&q=82',description:'A soft, quick-drying linen-cotton waffle towel that gets even lovelier with every wash. Woven in a small family mill.'},
+  {id:'face-oil',name:'Camellia Face Oil',category:'Beauty',price:29,origin:'Made in South Korea',tag:'New',image:'https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?auto=format&fit=crop&w=800&q=82',description:'A few drops of cold-pressed camellia oil bring a dewy glow. Fragrance-free, wonderfully simple, and suited to every skin type.'},
+  {id:'chili-crisp',name:'Crispy Chili Crunch',category:'Pantry',price:12,origin:'Made in Taiwan',tag:'A little spicy',image:'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=800&q=82',description:'Crunchy shallots, toasted garlic, and just the right amount of heat. Spoon it over noodles, eggs, rice, or absolutely everything.'},
+  {id:'market-tote',name:'Everywhere Market Tote',category:'Accessories',price:26,origin:'Made in Portugal',tag:'',image:'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=82',description:'A sturdy everyday carryall in heavyweight organic cotton. Room for the farmers market, a good book, and a few happy accidents.'}
 ];
 const $ = (selector, root=document) => root.querySelector(selector);
 const $$ = (selector, root=document) => [...root.querySelectorAll(selector)];
 let activeCategory = 'All';
 let cart = loadCart();
 let toastTimer;
+let currentUser=null;
+let cartSyncQueue=Promise.resolve();
 
-function loadCart(){try{return JSON.parse(localStorage.getItem('parcel-pine-cart'))||{}}catch{return {}}}
-function saveCart(){localStorage.setItem('parcel-pine-cart',JSON.stringify(cart));renderCart()}
-function money(value){return "₦"+value.toLocaleString("en-NG")}
+function cleanCart(value){
+  if(!value||typeof value!=='object'||Array.isArray(value))return {};
+  return Object.fromEntries(Object.entries(value).filter(([id,qty])=>products.some(p=>p.id===id)&&Number.isInteger(qty)&&qty>0));
+}
+function loadCart(){try{return cleanCart(JSON.parse(localStorage.getItem('parcel-pine-cart')))}catch{return {}}}
+function saveCart(){
+  if(!currentUser)localStorage.setItem('parcel-pine-cart',JSON.stringify(cart));
+  renderCart();
+  if(currentUser)syncCart(currentUser.id);
+}
+function syncCart(userId){
+  const snapshot={...cart};
+  cartSyncQueue=cartSyncQueue.then(async()=>{
+    if(currentUser?.id!==userId)return;
+    const {data:existing,error:loadError}=await supabaseClient.from('cart_items').select('product_id').eq('user_id',userId);
+    if(loadError)throw loadError;
+    const rows=Object.entries(snapshot).map(([product_id,quantity])=>({user_id:userId,product_id,quantity,updated_at:new Date().toISOString()}));
+    if(rows.length){
+      const {error}=await supabaseClient.from('cart_items').upsert(rows,{onConflict:'user_id,product_id'});
+      if(error)throw error;
+    }
+    const stale=(existing||[]).map(row=>row.product_id).filter(id=>!Object.hasOwn(snapshot,id));
+    if(stale.length){
+      const {error}=await supabaseClient.from('cart_items').delete().eq('user_id',userId).in('product_id',stale);
+      if(error)throw error;
+    }
+  }).catch(error=>{
+    console.error('Could not sync cart:',error);
+    showToast('Your bag could not sync. Please try again.');
+  });
+  return cartSyncQueue;
+}
+async function loadAccountCart(user){
+  const guestCart=loadCart();
+  const {data,error}=await supabaseClient.from('cart_items').select('product_id,quantity').eq('user_id',user.id);
+  if(error)throw error;
+  if(currentUser?.id!==user.id)return;
+  const accountCart=cleanCart(Object.fromEntries((data||[]).map(row=>[row.product_id,row.quantity])));
+  cart={...accountCart};
+  for(const [id,quantity] of Object.entries(guestCart))cart[id]=(cart[id]||0)+quantity;
+  localStorage.removeItem('parcel-pine-cart');
+  renderCart();
+  if(Object.keys(guestCart).length)await syncCart(user.id);
+}
+function money(value){return `$${value.toFixed(2)}`}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function showToast(message){const toast=$('#toast');toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2400)}
 async function createOrder(customerEmail,total){
@@ -222,16 +74,7 @@ async function createOrder(customerEmail,total){
   const order={customer_email:customerEmail,total};
   const accessToken=session?.access_token;
   if(session?.user?.id)order.user_id=session.user.id;
-  const response=await fetch(`${SUPABASE_URL}/rest/v1/orders`,{
-    method:'POST',
-    headers:{
-      apikey:SUPABASE_PUBLISHABLE_KEY,
-      ...(accessToken ? {Authorization:`Bearer ${accessToken}`} : {}),
-      'Content-Type':'application/json',
-      Prefer:'return=minimal'
-    },
-    body:JSON.stringify(order)
-  });
+  const response=await fetch(`${SUPABASE_URL}/rest/v1/orders`,{method:'POST',headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${accessToken||SUPABASE_PUBLISHABLE_KEY}`,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(order)});
   if(!response.ok){const result=await response.json().catch(()=>({}));throw new Error(`Order insert failed (HTTP ${response.status}${result.code?`, ${result.code}`:''})`)}
 }
 function renderProducts(){
@@ -245,15 +88,14 @@ function renderProducts(){
 function renderCart(){
   const entries=Object.entries(cart).filter(([,qty])=>qty>0);const count=entries.reduce((sum,[,qty])=>sum+qty,0);const total=entries.reduce((sum,[id,qty])=>sum+products.find(p=>p.id===id).price*qty,0);
   $('.cart-count').textContent=count;$('.drawer-count').textContent=`(${count})`;$('#cart-total').textContent=money(total);$('#cart-items').innerHTML=entries.map(([id,qty])=>{const p=products.find(item=>item.id===id);return `<div class="cart-item"><img src="${p.image}" alt=""><div><h3>${escapeHtml(p.name)}</h3><span class="origin">${escapeHtml(p.origin)}</span><div class="quantity-control"><button data-qty="${id}" data-delta="-1" aria-label="Decrease ${escapeHtml(p.name)} quantity">−</button><span>${qty}</span><button data-qty="${id}" data-delta="1" aria-label="Increase ${escapeHtml(p.name)} quantity">+</button></div></div><div><span class="cart-item-price">${money(p.price*qty)}</span><button class="remove-item" data-remove="${id}">Remove</button></div></div>`}).join('');
-  $('#cart-empty').hidden=count>0;$('#cart-footer').hidden=count===0;$('#shipping-message').textContent='Delivery details are arranged after your order is confirmed ✳';
+  $('#cart-empty').hidden=count>0;$('#cart-footer').hidden=count===0;$('#shipping-message').textContent=total>=75?'You unlocked free US shipping ✳':`You're ${money(75-total)} away from free shipping ✳`;
 }
 function addToCart(id,qty=1){cart[id]=(cart[id]||0)+qty;saveCart();showToast(`${products.find(p=>p.id===id).name} added to your bag`)}
 function openOverlay(){const overlay=$('#overlay');overlay.hidden=false;requestAnimationFrame(()=>overlay.classList.add('show'))}
 function closeAll(){const drawer=$('#cart-drawer');drawer.classList.remove('open');drawer.setAttribute('aria-hidden','true');$('#overlay').classList.remove('show');setTimeout(()=>$('#overlay').hidden=true,250);$$('.modal-wrap').forEach(m=>m.hidden=true);document.body.style.overflow=''}
 function openCart(){openOverlay();$('#cart-drawer').classList.add('open');$('#cart-drawer').setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
 function openProduct(id){const p=products.find(item=>item.id===id);$('#modal-product').innerHTML=`<img src="${p.image}" alt="${escapeHtml(p.name)}"><div><p class="eyebrow">${escapeHtml(p.category)} · ${escapeHtml(p.origin)}</p><h2>${escapeHtml(p.name)}</h2><span class="modal-price">${money(p.price)}</span><p class="description">${escapeHtml(p.description)}</p><span class="modal-origin">Thoughtfully sourced · Ships with care</span><br><button class="button button-dark" data-add="${p.id}">Add to bag <span>↗</span></button></div>`;openOverlay();$('#product-modal').hidden=false;document.body.style.overflow='hidden'}
-function openCheckout(){if(!Object.keys(cart).length)return;const subtotal=Object.entries(cart).reduce((s,[id,q])=>s+products.find(p=>p.id===id).price*q,0);$('#checkout-summary').textContent=`Your finds total ${money(subtotal)}. Pay securely in Nigerian naira with Paystack.`;$('#checkout-modal').hidden=false;document.body.style.overflow='hidden'}
-let currentUser=null;
+function openCheckout(){if(!Object.keys(cart).length)return;const subtotal=Object.entries(cart).reduce((s,[id,q])=>s+products.find(p=>p.id===id).price*q,0);$('#checkout-summary').textContent=`Your finds total ${money(subtotal)}${subtotal>=75?' · free US shipping':''}.`;$('#checkout-modal').hidden=false;document.body.style.overflow='hidden'}
 function renderOrderHistory(orders){
   $('#order-history').innerHTML=orders.map(order=>{
     const date=order.created_at?new Date(order.created_at):null;
@@ -302,6 +144,8 @@ supabaseClient.auth.onAuthStateChange((event,session)=>{
   $('#account-signed-out').hidden=Boolean(currentUser);
   $('#account-signed-in').hidden=!currentUser;
   if(!currentUser){
+    cart=loadCart();
+    renderCart();
     $('#account-email').textContent='';
     $('#order-history').replaceChildren();
     $('#orders-status').hidden=true;
@@ -311,7 +155,14 @@ supabaseClient.auth.onAuthStateChange((event,session)=>{
   $('#account-email').textContent=currentUser.email||'Signed in';
   if(event==='INITIAL_SESSION'||event==='SIGNED_IN'||previousUserId!==currentUser.id){
     const user=currentUser;
-    setTimeout(()=>loadOrders(user),0);
+    setTimeout(()=>{
+      loadOrders(user);
+      loadAccountCart(user).catch(error=>{
+        if(currentUser?.id!==user.id)return;
+        console.error('Could not load cart:',error);
+        showToast('Your saved bag could not be loaded. Please try again.');
+      });
+    },0);
   }
 });
 $('#sign-out').addEventListener('click',async e=>{
@@ -345,123 +196,27 @@ $('#checkout-form').addEventListener('submit',async e=>{
   const form=e.currentTarget;
   if(!form.reportValidity())return;
   const customerEmail=new FormData(form).get('email').trim();
-  const items=Object.entries(cart).filter(([,quantity])=>quantity>0).map(([id,quantity])=>({id,quantity}));
+  const total=Object.entries(cart).reduce((sum,[id,qty])=>sum+products.find(p=>p.id===id).price*qty,0);
   const submitButton=form.querySelector('[type="submit"]');
   const status=$('#checkout-status');
   submitButton.disabled=true;
   status.hidden=false;
-  status.textContent='Opening secure checkout…';
+  status.textContent='Saving your order…';
   try{
-    const response=await fetch('/api/initialize-payment',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email:customerEmail,items})
-    });
-    const result=await response.json().catch(()=>({}));
-    if(!response.ok)throw new Error(result.error||'Secure checkout could not be started');
-    if(typeof result.authorizationUrl!=='string')throw new Error('Secure checkout returned an invalid payment link');
-    window.location.assign(result.authorizationUrl);
+    await createOrder(customerEmail,total);
+    cart={};
+    saveCart();
+    closeAll();
+    form.reset();
+    status.textContent='';
+    status.hidden=true;
+    showToast('Your order has been saved. Thank you!');
   }catch(error){
-    console.error('Paystack checkout could not be started:',error);
-    status.textContent=error.message||'Secure checkout could not be started. Please try again.';
+    console.error(error);
+    status.textContent='We could not save your order. Please try again in a moment.';
   }finally{
     submitButton.disabled=false;
   }
 });
-async function completePaymentReturn(){
-  const query=new URLSearchParams(window.location.search);
-  const reference=query.get('reference')||query.get('trxref');
-  if(!reference)return;
-
-  const form=$('#checkout-form');
-  const submitButton=form.querySelector('[type="submit"]');
-  const status=$('#checkout-status');
-  $('#checkout-modal').hidden=false;
-  openOverlay();
-  document.body.style.overflow='hidden';
-  status.hidden=false;
-  submitButton.disabled=true;
-  status.textContent='Verifying your payment…';
-
-  const completedKey=`libway-paid-reference:${reference}`;
-  if(sessionStorage.getItem(completedKey)==='saved'){
-    history.replaceState({},'',window.location.pathname+window.location.hash);
-    closeAll();
-    showToast('Your payment and order are confirmed.');
-    return;
-  }
-
-  let paymentConfirmed=false;
-  try{
-    const response=await fetch('/api/verify-payment',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({reference})
-    });
-    const result=await response.json().catch(()=>({}));
-    if(!response.ok)throw new Error(result.error||'Payment could not be verified');
-    paymentConfirmed=true;
-    const expectedItems=Object.entries(cart).filter(([,quantity])=>quantity>0).map(([id,quantity])=>({id,quantity})).sort((a,b)=>a.id.localeCompare(b.id));
-    const paidItems=Array.isArray(result.items)?result.items.map(item=>({id:item.id,quantity:item.quantity})).sort((a,b)=>a.id.localeCompare(b.id)):[];
-    const sameItems=JSON.stringify(expectedItems)===JSON.stringify(paidItems);
-    const cartTotal=expectedItems.reduce((sum,item)=>sum+products.find(product=>product.id===item.id).price*item.quantity,0);
-    if(!sameItems||result.total!==cartTotal){
-      throw new Error(`Payment was received, but the order details did not match. Contact the shop with reference ${reference}; please do not pay again.`);
-    }
-
-    form.elements.email.value=result.email;
-    await createOrder(result.email,result.total);
-    sessionStorage.setItem(completedKey,'saved');
-    cart={};
-    saveCart();
-    history.replaceState({},'',window.location.pathname+window.location.hash);
-    form.reset();
-    closeAll();
-    try{
-      const emailResponse=await fetch('/api/send-email',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({type:'order_confirmation',reference})
-      });
-      const emailResult=await emailResponse.json().catch(()=>({}));
-      if(!emailResponse.ok)throw new Error(emailResult.error||'Confirmation emails could not be sent');
-      showToast('Payment confirmed. Check your email for your receipt.');
-    }catch(emailError){
-      console.error('Paid order email failed:',emailError);
-      showToast('Payment and order confirmed, but the confirmation email could not be sent.');
-    }
-  }catch(error){
-    console.error('Could not complete the paid order:',error);
-    status.textContent=error.message||'Payment could not be verified. Please try again.';
-    if(paymentConfirmed)submitButton.disabled=true;
-  }finally{
-    if(!paymentConfirmed)submitButton.disabled=false;
-  }
-}
-$('#newsletter-form').addEventListener('submit',async e=>{
-  e.preventDefault();
-  const form=e.currentTarget;
-  const email=$('#newsletter-email');
-  if(!email.reportValidity())return;
-  const button=form.querySelector('button[type="submit"]');
-  button.disabled=true;
-  button.textContent='Sending…';
-  try{
-    const response=await fetch('/api/send-email',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email:email.value.trim()})
-    });
-    const result=await response.json().catch(()=>({}));
-    if(!response.ok)throw new Error(result.error||'Email could not be sent');
-    showToast('You’re on the list. Check your inbox!');
-    form.reset();
-  }catch(error){
-    console.error('Newsletter email failed:',error);
-    showToast('We could not send the email. Please try again.');
-  }finally{
-    button.disabled=false;
-    button.innerHTML='Count me in <span>↗</span>';
-  }
-});
-renderProducts();renderCart();completePaymentReturn();
+$('#newsletter-form').addEventListener('submit',e=>{e.preventDefault();const email=$('#newsletter-email');if(email.reportValidity()){showToast('You’re on the list. Watch your inbox for a little hello!');e.currentTarget.reset()}});
+renderProducts();renderCart();
