@@ -1,4 +1,5 @@
 import { Alert, Button, StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { supabase } from '../../lib/supabase';
 
@@ -33,6 +34,7 @@ async function handleAuthCallback(url: string) {
 }
 
 export default function LoginScreen() {
+    const router = useRouter();
   const signInWithGoogle = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -57,11 +59,18 @@ export default function LoginScreen() {
       redirectTo,
     );
 
-    if (result.type === 'success' && result.url) {
-      await handleAuthCallback(result.url);
-    }
-  };
+  if (result.type === 'success' && result.url) {
+  await handleAuthCallback(result.url);
 
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session) {
+    router.replace('/');
+  }
+}
+};
   return (
     <View style={styles.container}>
       <Text style={styles.title}>LIBWAY SHOP</Text>

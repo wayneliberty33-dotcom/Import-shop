@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Link } from 'expo-router';
 import { getProducts, Product } from '../data/products';
+import { supabase } from '../../lib/supabase';
 import { addToCart } from '../data/cart';
 
 export default function HomeScreen() {
@@ -18,15 +19,26 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    getProducts()
-      .then(setProducts)
-      .catch((err) => {
-        console.error(err);
-        setError('Could not load products.');
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  
+    useEffect(() => {
+  getProducts()
+    .then(setProducts)
+    .catch((err) => {
+      console.error(err);
+      setError('Could not load products.');
+    })
+    .finally(() => setLoading(false));
+
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((event) => {
+    console.log('AUTH STATE:', event);
+  });
+
+  return () => {
+    subscription.unsubscribe();
+  };
+}, []);
 
   const handleAddToCart = async (product: Product) => {
     try {
