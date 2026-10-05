@@ -211,50 +211,92 @@ let activeCategory = 'All';
 let cart = loadCart();
 let toastTimer;
 
-function cleanCart(value){
-  if(!value||typeof value!=='object'||Array.isArray(value))return {};
-  return Object.fromEntries(Object.entries(value).filter(([id,qty])=>products.some(product=>product.id===id)&&Number.isInteger(qty)&&qty>0));
+function loadCart(){
+  try{
+    return JSON.parse(localStorage.getItem('libway-shop-cart'))||{};
+  }catch{
+    return {};
+  }
 }
-function loadCart(){try{return cleanCart(JSON.parse(localStorage.getItem('parcel-pine-cart'))||{})}catch{return {}}}
-function saveCart(){
-  if(!currentUser)localStorage.setItem('parcel-pine-cart',JSON.stringify(cart));
+
+async function loadSupabaseCart(user){
+  if(!user?.id){
+    renderCart();
+    return;
+  }
+
+  try{
+    const {data,error}=await supabaseClient
+      .from('cart_items')
+      .select('product_id,quantity')
+      .eq('user_id',user.id);
+
+    if(error)throw error;
+
+    const remoteCart={};
+
+    (data||[]).forEach(item=>{
+      if(item.quantity>0)remoteCart[item.product_id]=item.quantity;
+    });
+
+    cart=remoteCart;
+
+    localStorage.setItem('libway-shop-cart',JSON.stringify(cart));
+    renderCart();
+  }catch(error){
+    console.error('Could not load shared cart:',error);
+    renderCart();
+    showToast('Your cart could not be synced. Please try again.');
+  }
+}
+
+async function saveCart(){
+  localStorage.setItem('libway-shop-cart',JSON.stringify(cart));
   renderCart();
-  if(currentUser)syncCart(currentUser.id);
-}
-function syncCart(userId){
-  const snapshot={...cart};
-  cartSyncQueue=cartSyncQueue.then(async()=>{
-    if(currentUser?.id!==userId)return;
-    const {data:existing,error:loadError}=await supabaseClient.from('cart_items').select('product_id').eq('user_id',userId);
-    if(loadError)throw loadError;
-    if(currentUser?.id!==userId)return;
-    const rows=Object.entries(snapshot).map(([product_id,quantity])=>({user_id:userId,product_id,quantity,updated_at:new Date().toISOString()}));
-    if(rows.length){
-      const {error}=await supabaseClient.from('cart_items').upsert(rows,{onConflict:'user_id,product_id'});
+
+  if(!currentUser?.id)return;
+
+  try{
+    const items=Object.entries(cart)
+      .filter(([,quantity])=>quantity>0)
+      .map(([product_id,quantity])=>({
+        user_id:currentUser.id,
+        product_id,
+        quantity
+      }));
+
+    if(items.length){
+      const {error}=await supabaseClient
+        .from('cart_items')
+        .upsert(items,{onConflict:'user_id,product_id'});
+
       if(error)throw error;
     }
-    const stale=(existing||[]).map(row=>row.product_id).filter(id=>!Object.prototype.hasOwnProperty.call(snapshot,id));
-    if(stale.length){
-      const {error}=await supabaseClient.from('cart_items').delete().eq('user_id',userId).in('product_id',stale);
-      if(error)throw error;
+
+    const {data:existing,error:existingError}=await supabaseClient
+      .from('cart_items')
+      .select('product_id')
+      .eq('user_id',currentUser.id);
+
+    if(existingError)throw existingError;
+
+    const currentIds=new Set(Object.keys(cart));
+
+    for(const item of existing||[]){
+      if(!currentIds.has(item.product_id)){
+        const {error}=await supabaseClient
+          .from('cart_items')
+          .delete()
+          .eq('user_id',currentUser.id)
+          .eq('product_id',item.product_id);
+
+        if(error)throw error;
+      }
     }
-  }).catch(error=>{
-    console.error('Could not sync cart:',error);
-    showToast('Your bag could not sync. Please try again.');
-  });
-  return cartSyncQueue;
-}
-async function loadAccountCart(user){
-  const guestCart=loadCart();
-  const {data,error}=await supabaseClient.from('cart_items').select('product_id,quantity').eq('user_id',user.id);
-  if(error)throw error;
-  if(currentUser?.id!==user.id)return;
-  const accountCart=cleanCart(Object.fromEntries((data||[]).map(row=>[row.product_id,row.quantity])));
-  cart={...accountCart};
-  for(const [id,quantity] of Object.entries(guestCart))cart[id]=(cart[id]||0)+quantity;
-  localStorage.removeItem('parcel-pine-cart');
-  renderCart();
-  if(Object.keys(guestCart).length)await syncCart(user.id);
+  }catch(error){
+    console.error('Could not save shared cart:',error);
+    showToast('Your cart could not be synced. Please try again.');
+  }
 }
 function money(value){return "₦"+value.toLocaleString("en-NG")}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -297,7 +339,6 @@ function openCart(){openOverlay();$('#cart-drawer').classList.add('open');$('#ca
 function openProduct(id){const p=products.find(item=>item.id===id);$('#modal-product').innerHTML=`<img src="${p.image}" alt="${escapeHtml(p.name)}"><div><p class="eyebrow">${escapeHtml(p.category)} · ${escapeHtml(p.origin)}</p><h2>${escapeHtml(p.name)}</h2><span class="modal-price">${money(p.price)}</span><p class="description">${escapeHtml(p.description)}</p><span class="modal-origin">Thoughtfully sourced · Ships with care</span><br><button class="button button-dark" data-add="${p.id}">Add to bag <span>↗</span></button></div>`;openOverlay();$('#product-modal').hidden=false;document.body.style.overflow='hidden'}
 function openCheckout(){if(!Object.keys(cart).length)return;const subtotal=Object.entries(cart).reduce((s,[id,q])=>s+products.find(p=>p.id===id).price*q,0);$('#checkout-summary').textContent=`Your finds total ${money(subtotal)}. Pay securely in Nigerian naira with Paystack.`;$('#checkout-modal').hidden=false;document.body.style.overflow='hidden'}
 let currentUser=null;
-let cartSyncQueue=Promise.resolve();
 function renderOrderHistory(orders){
   $('#order-history').innerHTML=orders.map(order=>{
     const date=order.created_at?new Date(order.created_at):null;
@@ -346,8 +387,6 @@ supabaseClient.auth.onAuthStateChange((event,session)=>{
   $('#account-signed-out').hidden=Boolean(currentUser);
   $('#account-signed-in').hidden=!currentUser;
   if(!currentUser){
-    cart=loadCart();
-    renderCart();
     $('#account-email').textContent='';
     $('#order-history').replaceChildren();
     $('#orders-status').hidden=true;
@@ -357,15 +396,10 @@ supabaseClient.auth.onAuthStateChange((event,session)=>{
   $('#account-email').textContent=currentUser.email||'Signed in';
   if(event==='INITIAL_SESSION'||event==='SIGNED_IN'||previousUserId!==currentUser.id){
     const user=currentUser;
-    setTimeout(()=>{
-      loadOrders(user);
-      loadAccountCart(user).catch(error=>{
-        if(currentUser?.id!==user.id)return;
-        console.error('Could not load cart:',error);
-        showToast('Your saved bag could not be loaded. Please try again.');
-      });
-    },0);
-  }
+setTimeout(()=>{
+  loadSupabaseCart(user);
+  loadOrders(user);
+},0);  }
 });
 $('#sign-out').addEventListener('click',async e=>{
   const button=e.currentTarget;
@@ -517,4 +551,4 @@ $('#newsletter-form').addEventListener('submit',async e=>{
     button.innerHTML='Count me in <span>↗</span>';
   }
 });
-renderProducts();renderCart();completePaymentReturn();donne
+renderProducts();renderCart();completePaymentReturn();
