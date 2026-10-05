@@ -66,3 +66,46 @@ export async function addToCart(
     throw error;
   }
 }
+export async function updateCartQuantity(
+  productId: string,
+  quantity: number,
+): Promise<void> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error('You must be signed in to use the cart.');
+  }
+
+  if (quantity <= 0) {
+    const { error } = await supabase
+      .from('cart_items')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('product_id', productId);
+
+    if (error) {
+      throw error;
+    }
+
+    return;
+  }
+
+  const { error } = await supabase
+    .from('cart_items')
+    .upsert(
+      {
+        user_id: user.id,
+        product_id: productId,
+        quantity,
+      },
+      {
+        onConflict: 'user_id,product_id',
+      },
+    );
+
+  if (error) {
+    throw error;
+  }
+}

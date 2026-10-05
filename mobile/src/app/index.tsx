@@ -78,6 +78,9 @@ export default function HomeScreen() {
       <Link href="./login" style={styles.signIn}>
         Sign in to your account
       </Link>
+      <Link href="./cart" style={styles.signIn}>
+        View Cart
+      </Link>
 
       <FlatList
         data={products}
