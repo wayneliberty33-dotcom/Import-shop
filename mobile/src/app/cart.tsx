@@ -9,8 +9,11 @@ import {
   View,
 } from 'react-native';
 import { Link } from 'expo-router';
-import { getCart, CartItem } from '../data/cart';
-import { getProducts, Product } from '../data/products';
+import {
+  getCart,
+  CartItem,
+  updateCartQuantity,
+} from '../data/cart';import { getProducts, Product } from '../data/products';
 
 type CartRow = CartItem & {
   product?: Product;
@@ -51,6 +54,18 @@ export default function CartScreen() {
   useEffect(() => {
     loadCart();
   }, []);
+  async function changeQuantity(productId: string, quantity: number) {
+    try {
+      await updateCartQuantity(productId, quantity);
+      await loadCart();
+    } catch (error) {
+      console.error(error);
+      Alert.alert(
+        'Could not update quantity',
+        'Please try again.',
+      );
+    }
+  }
 
   const total = items.reduce(
     (sum, item) =>
@@ -91,9 +106,26 @@ export default function CartScreen() {
                   {item.product?.name ?? item.product_id}
                 </Text>
 
-                <Text style={styles.quantity}>
-                  Quantity: {item.quantity}
-                </Text>
+               <View style={styles.quantityRow}>
+ <Text
+  style={styles.quantityButton}
+  onPress={() =>
+    changeQuantity(item.product_id, item.quantity - 1)
+  }
+>
+  −
+</Text>
+  <Text style={styles.quantity}>
+    Quantity: {item.quantity}
+  </Text>
+
+  <Button
+    title="+"
+    onPress={() =>
+      changeQuantity(item.product_id, item.quantity + 1)
+    }
+  />
+</View>
 
                 <Text style={styles.price}>
                   ₦
@@ -161,6 +193,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 8,
   },
+  quantityRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginBottom: 8,
+},
+quantityButton: {
+  fontSize: 28,
+  fontWeight: '700',
+  paddingHorizontal: 14,
+  paddingVertical: 4,
+},
   quantity: {
     fontSize: 15,
     marginBottom: 8,
